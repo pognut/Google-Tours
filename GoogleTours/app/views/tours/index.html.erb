@@ -117,11 +117,12 @@
   function xyToHeadingPitch(e){
     var x = e.offsetX;
     var y = e.offsetY;
-    var headingChange = x - $('#panoWriter').css('width')/2;
+    var width = parseInt($('#panoWriter').css('width'))
+    var height = parseInt($('#panoWriter').css('height'))
+    var headingChange = x - width/2;
     var heading = panorama.pov.heading + headingChange
-    var pitchChange = y - $('#panoWriter').css('width')/2;
+    var pitchChange = y - height/2;
     var pitch = panorama.pov.pitch + pitchChange;
-    console.log(heading, pitch)
     return {heading: heading, pitch: pitch}
   }
 
