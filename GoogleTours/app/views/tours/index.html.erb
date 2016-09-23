@@ -1,14 +1,82 @@
 <h1>Map goes here</h1>
+    <input id = "zipfinder">Enter ZIP here</input>
+    <button id = "zipbutton">submit</button>
+    <button id = "createTour">Create new Tour</button>
     <div id="map"></div>
+    <div id = 'pano'></div>
+    <div id = "panoWriter"></div>
     <script>
-      function initMap() {
-        // Create a map object and specify the DOM element for display.
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          scrollwheel: false,
-          zoom: 8
-        });
+  var geocoder;
+  var map;
+ function initMap() {
+    geocoder = new google.maps.Geocoder();
+    navigator.geolocation.getCurrentPosition(function(position){
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var mapOptions = {
+        center: new google.maps.LatLng(pos.lat, pos.lang),
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        streetViewControl: false
       }
+      map = new google.maps.Map(document.getElementById('map'), mapOptions)
+      map.setCenter(pos)
+    })};
+  function findByZip(zip){
+    geocoder.geocode( { 'address': zip}, function(results, status) {
+      if (status == 'OK') {
+        map.setCenter(results[0].geometry.location);
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+
+
+  function createTour(coords){
+    //testing code that places marker on map click
+    // var marker = new google.maps.Marker({
+    //   position: coords,
+    //   map: map
+    // })
+  var panorama = new google.maps.StreetViewPanorama(
+    document.getElementById('pano'), {
+        position: coords,
+        pov: {
+          heading: 34,
+          pitch: 10
+        }
+      });
+    $('#pano').on('mouseup', function(){
+      console.log(panorama.pov)
+       var infowindow = new google.maps.InfoWindow({
+    content: 'hi'
+  });
+       infowindow.open(map)
+    })
+    panorama.addListener('click', function(){
+     console.log(panorama)
+    })
+    map.setStreetView(panorama);
+  }
+
+  $('#zipbutton').on('click', function(){
+    var address = $('#zipfinder').val()
+    findByZip(address)
+  })
+  $('#createTour').on('click', function(){
+    map.addListener('click', function(e){
+      var coords = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng()
+    }
+      createTour(coords)
+    })
+  })
+
+
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
