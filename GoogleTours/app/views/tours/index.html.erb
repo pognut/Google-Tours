@@ -17,6 +17,7 @@
   var map;
   var panorama;
   var tour = []
+  var start;
  function initMap() {
     geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(position){
@@ -75,6 +76,9 @@
     $('#panoWriter').on('click', function(e){
       console.log(e, panorama)
       clickPoint = e;
+      $('#blurbInput').css('visibility', 'visible')
+      $('#blurbSave').css('visibility', 'visible')
+      $('#panoWriter').off('click')
     })
 
     $('#blurbSave').on('click', function(){
@@ -90,9 +94,9 @@
     $.ajax({
       "url": '/tours',
       "method": 'post',
-      "data": {tour: tour},
+      "data": {tour: tour, start: start},
       success: function(){
-        console.log('yay')
+        console.log(start)
       }
     })
   }
@@ -104,6 +108,7 @@
       content: blurbText,
       position: position,
       panoID: panorama.pano
+
     }
     tour.push(blurb)
     $('#panoWriter').css('visibility', 'hidden')
@@ -141,6 +146,7 @@
       lat: e.latLng.lat(),
       lng: e.latLng.lng()
     }
+      start = coords
       createTour(coords)
     })
   })
@@ -148,5 +154,5 @@
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
     async defer></script>
