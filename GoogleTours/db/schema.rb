@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160921213205) do
+ActiveRecord::Schema.define(version: 20160923205829) do
 
   create_table "tours", force: :cascade do |t|
-    t.string   "image"
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "blurbs"
+    t.decimal  "startLat"
+    t.decimal  "startLng"
     t.index ["user_id"], name: "index_tours_on_user_id"
   end
 

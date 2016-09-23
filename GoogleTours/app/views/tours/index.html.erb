@@ -17,9 +17,13 @@
   var map;
   var panorama;
   var tour = []
-  var start;
+  var startLng;
+  var startLat;
+  var panNum = 1;
+  var currentPano;
  function initMap() {
     geocoder = new google.maps.Geocoder();
+
     navigator.geolocation.getCurrentPosition(function(position){
       var pos = {
         lat: position.coords.latitude,
@@ -33,6 +37,20 @@
       }
       map = new google.maps.Map(document.getElementById('map'), mapOptions)
       map.setCenter(pos)
+      //LAT IS Y LNG IS X
+      google.maps.event.addListenerOnce(map, 'idle', function(){
+        var bounds = map.getBounds();
+        var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+        var sw = bounds.getSouthWest(); // LatLng of the south-west corder
+        <% @tours.each do |tourDB| %>
+        <% byebug %>
+        debugger;
+          if(ne.lng() < <%= tourDB.startLng %> < sw.lng() && ne.lat() < <%= tourDB.startLat %> < sw.lat()){
+            console.log('aosdjfa;slkdfj')
+          }
+        <% end %>
+      });
+
     })};
   function findByZip(zip){
     geocoder.geocode( { 'address': zip}, function(results, status) {
@@ -72,6 +90,9 @@
     $('#panoWriter').css('visibility', 'visible')
     $('#panoWriter').css('pointer-events', 'auto')
     $('#panoWriter').css('z-index', '2')
+    if(panorama.pano!==currentPano){
+      panNum +=1
+    }
     var clickPoint;
     $('#panoWriter').on('click', function(e){
       console.log(e, panorama)
@@ -80,23 +101,24 @@
       $('#blurbSave').css('visibility', 'visible')
       $('#panoWriter').off('click')
     })
-
     $('#blurbSave').on('click', function(){
       saveBlurb(clickPoint)
+      $('#saveTour').on('click', function(){
+        saveTour()
+      })
     })
 
-    $('#saveTour').on('click', function(){
-      saveTour()
-    })
+
   }
 
   function saveTour(){
+    tourString = JSON.stringify(tour)
     $.ajax({
       "url": '/tours',
       "method": 'post',
-      "data": {tour: tour, start: start},
+      "data": {tour: tourString, startLng: startLng, startLat: startLat},
       success: function(){
-        console.log(start)
+        console.log('tour saved')
       }
     })
   }
@@ -104,11 +126,12 @@
   function saveBlurb(click){
     var blurbText = $('#blurbInput').val()
     var position = xyToHeadingPitch(click)
+    currentPano = panorama.pano;
     var blurb = {
       content: blurbText,
       position: position,
-      panoID: panorama.pano
-
+      panoID: panorama.pano,
+      panNum: panNum
     }
     tour.push(blurb)
     $('#panoWriter').css('visibility', 'hidden')
@@ -122,8 +145,8 @@
   function xyToHeadingPitch(e){
     var x = e.offsetX;
     var y = e.offsetY;
-    var width = parseInt($('#panoWriter').css('width'))
-    var height = parseInt($('#panoWriter').css('height'))
+    var width = parseInt($('#panoWriter').css('width'), 10)
+    var height = parseInt($('#panoWriter').css('height'), 10)
     var headingChange = x - width/2;
     var heading = panorama.pov.heading + headingChange
     var pitchChange = y - height/2;
@@ -146,13 +169,14 @@
       lat: e.latLng.lat(),
       lng: e.latLng.lng()
     }
-      start = coords
-      createTour(coords)
+      startLng = Number(coords.lng);
+      startLat = Number(coords.lat);
+      createTour(coords);
     })
   })
 
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
     async defer></script>

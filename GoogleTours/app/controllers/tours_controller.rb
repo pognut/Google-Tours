@@ -4,7 +4,9 @@ class ToursController < ApplicationController
   end
 
   def create
-    data = params[:tour]
-    Tour.create(image: data, user_id: current_user.id)
+    blurbs = params[:tour]
+    startLng = params[:startLng]
+    startLat = params[:startLat]
+    Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: current_user.id)
   end
 end
