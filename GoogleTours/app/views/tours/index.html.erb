@@ -2,12 +2,21 @@
     <input id = "zipfinder">Enter ZIP here</input>
     <button id = "zipbutton">submit</button>
     <button id = "createTour">Create new Tour</button>
+    <button id = "saveTour"> Save your tour</button>
     <div id="map"></div>
-    <div id = 'pano'></div>
-    <div id = "panoWriter"></div>
+    <button id = "createBlurb">Add a blurb</button>
+    <div id = 'pano'>
+      <div id = "panoWriter">
+        <input id = "blurbInput">Enter your blurb text</input>
+        <button id = "blurbSave">Save your blurb</button>
+      </div>
+    </div>
+
     <script>
   var geocoder;
   var map;
+  var panorama;
+  var tour = []
  function initMap() {
     geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(position){
@@ -41,7 +50,7 @@
     //   position: coords,
     //   map: map
     // })
-  var panorama = new google.maps.StreetViewPanorama(
+  panorama = new google.maps.StreetViewPanorama(
     document.getElementById('pano'), {
         position: coords,
         pov: {
@@ -50,17 +59,76 @@
         }
       });
     $('#pano').on('mouseup', function(){
-      console.log(panorama.pov)
-       var infowindow = new google.maps.InfoWindow({
-    content: 'hi'
-  });
-       infowindow.open(map)
+      console.log(panorama)
     })
     panorama.addListener('click', function(){
      console.log(panorama)
     })
     map.setStreetView(panorama);
   }
+
+  function createBlurb(){
+    $('#panoWriter').css('visibility', 'visible')
+    $('#panoWriter').css('pointer-events', 'auto')
+    $('#panoWriter').css('z-index', '2')
+    var clickPoint;
+    $('#panoWriter').on('click', function(e){
+      console.log(e, panorama)
+      clickPoint = e;
+    })
+
+    $('#blurbSave').on('click', function(){
+      saveBlurb(clickPoint)
+    })
+
+    $('#saveTour').on('click', function(){
+      saveTour()
+    })
+  }
+
+  function saveTour(){
+    $.ajax({
+      "url": '/tours',
+      "method": 'post',
+      "data": {tour: tour},
+      success: function(){
+        console.log('yay')
+      }
+    })
+  }
+
+  function saveBlurb(click){
+    var blurbText = $('#blurbInput').val()
+    var position = xyToHeadingPitch(click)
+    var blurb = {
+      content: blurbText,
+      position: position,
+      panoID: panorama.pano
+    }
+    tour.push(blurb)
+    $('#panoWriter').css('visibility', 'hidden')
+    $('#panoWriter').css('pointer-events', 'none')
+    $('#panoWriter').css('z-index', '-2')
+    $('#panoWriter').off('click')
+   }
+
+
+
+  function xyToHeadingPitch(e){
+    var x = e.offsetX;
+    var y = e.offsetY;
+    var headingChange = x - $('#panoWriter').css('width')/2;
+    var heading = panorama.pov.heading + headingChange
+    var pitchChange = y - $('#panoWriter').css('width')/2;
+    var pitch = panorama.pov.pitch + pitchChange;
+    console.log(heading, pitch)
+    return {heading: heading, pitch: pitch}
+  }
+
+  $('#createBlurb').on('click', function(){
+    createBlurb()
+  })
+
 
   $('#zipbutton').on('click', function(){
     var address = $('#zipfinder').val()
