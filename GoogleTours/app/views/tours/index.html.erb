@@ -43,10 +43,34 @@
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest(); // LatLng of the south-west corder
         <% @tours.each do |tourDB| %>
-        <% byebug %>
-        debugger;
-          if(ne.lng() < <%= tourDB.startLng %> < sw.lng() && ne.lat() < <%= tourDB.startLat %> < sw.lat()){
-            console.log('aosdjfa;slkdfj')
+          var longitude = <%= tourDB.startLng %>
+          var latitude = <%= tourDB.startLat %>
+          if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
+            var startMarker = new google.maps.Marker({
+              position: {lat: latitude, lng: longitude},
+              map: map
+            })
+            startMarker.addListener('click', function(){
+              var blurbs = JSON.parse(<%= tourDB.blurbs.to_json.html_safe %>)
+              var firstpan = blurbs[0].panoID
+              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
+              panorama.setPano(firstpan)
+              blurbs.map(function(b){
+                var blurbDiv = $('<div class = '+b.panoID+'></div>')
+
+                blurbDiv.css('visibility', 'hidden')
+                blurbDiv.css('position', 'absolute')
+                blurbDiv.css('z-index', 3)
+                blurbDiv.text('asdfalsdkfja;lsdkfj;alskdfjla;skdfj')
+                $('#pano').append(blurbDiv)
+              })
+              panorama.addListener('pano_changed', function(){
+                blurbPositioner(panorama, blurbs)
+              })
+              panorama.addListener('pov_changed', function(){
+                blurbPositioner(panorama, blurbs)
+              })
+            })
           }
         <% end %>
       });
@@ -62,6 +86,24 @@
     });
   }
 
+  function blurbPositioner(data, blurbs){
+    blurbs.map(function(b){
+      console.log(b)
+      if(data.pano == b.panoID && (b.position.heading > data.pov.heading - 45) && (b.position.heading < data.pov.heading + 45)){
+        $('.'+b.panoID).css('visibility', 'visible')
+        var xYCoords = headingPitchToXY(b.position.heading, b.position.pitch)
+        var bottomOffset = 250 + Number(xYCoords.y)
+        var leftOffset = 250 + Number(xYCoords.x)
+        $('.'+b.panoID).css('bottom', bottomOffset+"px")
+        $('.'+b.panoID).css('left', leftOffset)
+        console.log(xYCoords.y,data.pov.pitch, b.position.pitch)
+        console.log($('.'+b.panoID).css('bottom'))
+      }
+      else{
+        $('.'+b.panoID).css('visibility', 'hidden')
+      }
+    })
+  }
 
   function createTour(coords){
     //testing code that places marker on map click
@@ -96,7 +138,7 @@
     var clickPoint;
     $('#panoWriter').on('click', function(e){
       console.log(e, panorama)
-      clickPoint = e;
+      clickPoint = {e:e, panorama:panorama};
       $('#blurbInput').css('visibility', 'visible')
       $('#blurbSave').css('visibility', 'visible')
       $('#panoWriter').off('click')
@@ -114,6 +156,7 @@
   function saveTour(){
     tourString = JSON.stringify(tour)
     $.ajax({
+      "dataType": 'JSON',
       "url": '/tours',
       "method": 'post',
       "data": {tour: tourString, startLng: startLng, startLat: startLat},
@@ -143,15 +186,29 @@
 
 
   function xyToHeadingPitch(e){
-    var x = e.offsetX;
-    var y = e.offsetY;
+    var x = e.e.offsetX;
+    var y = e.e.offsetY;
     var width = parseInt($('#panoWriter').css('width'), 10)
     var height = parseInt($('#panoWriter').css('height'), 10)
     var headingChange = x - width/2;
-    var heading = panorama.pov.heading + headingChange
+    var heading = e.panorama.pov.heading + (headingChange/(width/360))
     var pitchChange = y - height/2;
-    var pitch = panorama.pov.pitch + pitchChange;
+    var pitch = e.panorama.pov.pitch - (pitchChange/(height/90));
     return {heading: heading, pitch: pitch}
+  }
+
+
+
+  function headingPitchToXY(h,p){
+    var width = parseInt($('#panoWriter').css('width'), 10)
+    var height = parseInt($('#panoWriter').css('height'), 10)
+    var headingChange = h-panorama.pov.heading;
+    var pitchChange = p-panorama.pov.pitch;
+    var widthStretch = width/360;
+    var heightStretch = height/90;
+    var x = widthStretch * headingChange;
+    var y = heightStretch * pitchChange;
+    return {x:x, y:y}
   }
 
   $('#createBlurb').on('click', function(){
@@ -178,5 +235,5 @@
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
     async defer></script>

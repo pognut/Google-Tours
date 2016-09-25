@@ -10,3 +10,9 @@ class ToursController < ApplicationController
     Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: current_user.id)
   end
 end
+
+# Left to do:
+#   * add scroll check
+#   * link marker to tour start
+#   * add controls/ensure panNum is correct
+#   * add blurb div showing/hiding
