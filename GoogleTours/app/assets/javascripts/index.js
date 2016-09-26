@@ -54,6 +54,10 @@
             createTour(coords);
           })
         })
+        $('#createBlurb').on('click', function(){
+          console.log('works')
+          createBlurb()
+        })
       });
 
     })};
@@ -154,11 +158,6 @@
     $('#saveTour').css('visibility', 'visible')
     $('#createBlurb').css('visibility', 'visible')
     $('#my_popup').popup('show')
-
-  $('#createBlurb').on('click', function(){
-    console.log('works')
-    createBlurb()
-  })
   }
 
   function createBlurb(){
