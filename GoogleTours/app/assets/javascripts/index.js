@@ -89,7 +89,7 @@
                 var blurbDiv = $('<div class = "'+b.panoID+' blurbDiv"></div>')
                 blurbDiv.css('visibility', 'hidden')
                 blurbDiv.css('position', 'absolute')
-                blurbDiv.css('z-index', 3)
+                blurbDiv.css('z-index', 100010)
                 blurbDiv.text(b.content)
                 $('#pano').append(blurbDiv)
               })
