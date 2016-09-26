@@ -87,7 +87,9 @@
               console.log('hitting')
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
-              var blurbs = JSON.parse(toursJS[i].blurbs)
+              var currentTour = toursJS[i]
+              console.log(currentTour)
+              var blurbs = JSON.parse(currentTour.blurbs)
               var firstpan = blurbs[0].panoID
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
