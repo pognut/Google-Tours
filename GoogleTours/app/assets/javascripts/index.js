@@ -14,6 +14,11 @@
     }
   });
  function initMap() {
+
+  $('#createBlurb').on('click', function(){
+    console.log('works')
+    createBlurb()
+  })
     geocoder = new google.maps.Geocoder();
 
     navigator.geolocation.getCurrentPosition(function(position){
@@ -247,10 +252,6 @@
     return {x:x, y:y}
   }
 
-  $('#createBlurb').on('click', function(){
-    console.log('works')
-    createBlurb()
-  })
 
 
 
