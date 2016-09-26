@@ -1,27 +1,42 @@
 // Place all the styles related to the tours controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#map-container{
+  height: 75vw;
+  width: 75vw;
+  margin: 0 auto;
+}
+
 #map{
-  height: 1000px;
-  width: 1000px;
+  height: 80%;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+}
+
+#map-container > * {
+  display:block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#my_popup {
+  height: 500px;
+  width: 500px
 }
 
 #pano{
-  height: 500px;
-  width: 500px;
-  position: relative;
-  z-index: 0
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
 }
 
 #panoWriter{
-  height: 500px;
-  width: 500px;
-  top: 0;
-  left: 0;
-  position: absolute;
-  z-index: -1;
+  height: 100%;
+  width: 100%;
   visibility: hidden;
   pointer-events: none;
+  position: absolute;
 }
 
 #blurbInput {
@@ -31,3 +46,4 @@
 #blurbSave {
   visibility: hidden
 }
+

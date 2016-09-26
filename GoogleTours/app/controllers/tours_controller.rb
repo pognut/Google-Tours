@@ -12,7 +12,9 @@ class ToursController < ApplicationController
 end
 
 # Left to do:
-#   * add scroll check
-#   * link marker to tour start
-#   * add controls/ensure panNum is correct
-#   * add blurb div showing/hiding
+# * Clean up code (at least that giant ass listener at the start)
+# * Double check heading wrap around
+# * Remove unnecessary controls
+# * Create pop up windows for street view, at least. Try for blurbs as well.
+# * Prettify and center.
+# * If time, whip up demo tour.
