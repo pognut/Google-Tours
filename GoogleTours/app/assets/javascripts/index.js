@@ -83,13 +83,13 @@
               position: {lat: latitude, lng: longitude},
               map: map
             })
-            startMarker.addListener('click', function(i){
+            startMarker.addListener('click', function(){
               console.log('hitting')
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
               var currentTour = value.blurbs
               console.log(currentTour)
-              var blurbs = JSON.parse(currentTour.blurbs)
+              var blurbs = JSON.parse(currentTour)
               var firstpan = blurbs[0].panoID
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
