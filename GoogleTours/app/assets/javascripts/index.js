@@ -75,9 +75,9 @@
           var bounds = map.getBounds();
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest();
-          for(var i = 0; i < toursJS.length; i++){
-          longitude = Number(toursJS[i].startLng)
-          latitude = Number(toursJS[i].startLat)
+        $.each(toursJS, function(index, value){
+          longitude = Number(value.startLng)
+          latitude = Number(value.startLat)
           if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
             var startMarker = new google.maps.Marker({
               position: {lat: latitude, lng: longitude},
@@ -87,7 +87,7 @@
               console.log('hitting')
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
-              var currentTour = toursJS[i]
+              var currentTour = value.blurbs
               console.log(currentTour)
               var blurbs = JSON.parse(currentTour.blurbs)
               var firstpan = blurbs[0].panoID
@@ -109,7 +109,7 @@
               })
             })
           }
-  }
+  })
 }
 
 
