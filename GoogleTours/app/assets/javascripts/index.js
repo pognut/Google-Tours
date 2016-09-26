@@ -155,6 +155,7 @@
   }
 
   function createBlurb(){
+    debugger
     $('#panoWriter').css('visibility', 'visible')
     $('#panoWriter').css('pointer-events', 'auto')
     var writerZ = Number($('#my_popup_wrapper').css('z-index'))+5
@@ -247,6 +248,7 @@
   }
 
   $('#createBlurb').on('click', function(){
+    console.log('works')
     createBlurb()
   })
 
