@@ -86,9 +86,9 @@
             startMarker.addListener('click', function(){
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
-              debugger
               var blurbs = JSON.parse(toursJS[i].blurbs)
               var firstpan = blurbs[0].panoID
+              debugger
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
               blurbs.map(function(b){
