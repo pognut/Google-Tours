@@ -15,10 +15,6 @@
   });
  function initMap() {
 
-  $('#createBlurb').on('click', function(){
-    console.log('works')
-    createBlurb()
-  })
     geocoder = new google.maps.Geocoder();
 
     navigator.geolocation.getCurrentPosition(function(position){
@@ -156,11 +152,16 @@
     })
     map.setStreetView(panorama);
     $('#saveTour').css('visibility', 'visible')
+    $('#createBlurb').css('visibility', 'visible')
     $('#my_popup').popup('show')
+
+  $('#createBlurb').on('click', function(){
+    console.log('works')
+    createBlurb()
+  })
   }
 
   function createBlurb(){
-    debugger
     $('#panoWriter').css('visibility', 'visible')
     $('#panoWriter').css('pointer-events', 'auto')
     var writerZ = Number($('#my_popup_wrapper').css('z-index'))+5
