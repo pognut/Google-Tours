@@ -14,6 +14,8 @@
         </div>
       </div>
     </div>
-  <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
+<%= javascript_tag do %>
+  var toursJS = <%= @tours.to_json.html_safe %>;
+<% end %>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
     async defer></script>

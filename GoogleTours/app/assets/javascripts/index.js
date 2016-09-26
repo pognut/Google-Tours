@@ -70,9 +70,9 @@
           var bounds = map.getBounds();
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest();
-           <% @tours.each do |tourDB| %>
-          var longitude = <%= tourDB.startLng %>
-          var latitude = <%= tourDB.startLat %>
+          for(var i = 0; i < toursJS.length; i++){
+          longitude = Number(toursJS[i].startLng)
+          latitude = Number(toursJS[i].startLat)
           if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
             var startMarker = new google.maps.Marker({
               position: {lat: latitude, lng: longitude},
@@ -81,7 +81,7 @@
             startMarker.addListener('click', function(){
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
-              var blurbs = JSON.parse(<%=  tourDB.blurbs.to_json.html_safe %>)
+              var blurbs = JSON.parse(toursJS)
               var firstpan = blurbs[0].panoID
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
@@ -101,8 +101,7 @@
               })
             })
           }
-        <% end %>
-  }
+  }}
 
 
   function blurbPositioner(data, blurbs){
