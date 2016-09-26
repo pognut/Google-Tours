@@ -14,8 +14,10 @@
         </div>
       </div>
     </div>
+<div id = "jsdiv" style = 'visibility: hidden'>
 <%= javascript_tag do %>
   var toursJS = <%= @tours.to_json.html_safe %>;
 <% end %>
+</div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
     async defer></script>
