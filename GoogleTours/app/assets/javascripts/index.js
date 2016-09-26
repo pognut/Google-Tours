@@ -83,7 +83,7 @@
               position: {lat: latitude, lng: longitude},
               map: map
             })
-            startMarker.addListener('click', function(){
+            startMarker.addListener('click', function(i){
               console.log('hitting')
               $('#my_popup').popup('show');
               $('#createBlurb').css('visibility', 'hidden')
