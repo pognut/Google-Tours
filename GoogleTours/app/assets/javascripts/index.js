@@ -1,3 +1,4 @@
+
  //  var geocoder;
  //  var map;
  //  var panorama;
@@ -6,6 +7,7 @@
  //  var startLat;
  //  var panNum = 1;
  //  var currentPano;
+ //  $('#my_popup').popup({blur:false});
  // function initMap() {
  //    geocoder = new google.maps.Geocoder();
 
@@ -24,75 +26,27 @@
  //      map.setCenter(pos)
  //      //LAT IS Y LNG IS X
  //      google.maps.event.addListenerOnce(map, 'idle', function(){
- //        var bounds = map.getBounds();
- //        var ne = bounds.getNorthEast(); // LatLng of the north-east corner
- //        var sw = bounds.getSouthWest(); // LatLng of the south-west corder
- //        <% @tours.each do |tourDB| %>
- //          var longitude = <%= tourDB.startLng %>
- //          var latitude = <%= tourDB.startLat %>
- //          if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
- //            var startMarker = new google.maps.Marker({
- //              position: {lat: latitude, lng: longitude},
- //              map: map
- //            })
- //            startMarker.addListener('click', function(){
- //              var blurbs = JSON.parse(<%= tourDB.blurbs.to_json.html_safe %>)
- //              var firstpan = blurbs[0].panoID
- //              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
- //              panorama.setPano(firstpan)
- //              blurbs.map(function(b){
- //                var blurbDiv = $('<div class = '+b.panoID+'></div>')
-
- //                blurbDiv.css('visibility', 'hidden')
- //                blurbDiv.css('position', 'absolute')
- //                blurbDiv.css('z-index', 3)
- //                blurbDiv.text(b.content)
- //                $('#pano').append(blurbDiv)
- //              })
- //              panorama.addListener('pano_changed', function(){
- //                blurbPositioner(panorama, blurbs)
- //              })
- //              panorama.addListener('pov_changed', function(){
- //                blurbPositioner(panorama, blurbs)
- //              })
- //            })
- //          }
- //        <% end %>
+ //        tourViewer()
  //        map.addListener('dragend',function(){
- //          var bounds = map.getBounds();
- //        var ne = bounds.getNorthEast(); // LatLng of the north-east corner
- //        var sw = bounds.getSouthWest();
- //           <% @tours.each do |tourDB| %>
- //          var longitude = <%= tourDB.startLng %>
- //          var latitude = <%= tourDB.startLat %>
- //          if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
- //            var startMarker = new google.maps.Marker({
- //              position: {lat: latitude, lng: longitude},
- //              map: map
- //            })
- //            startMarker.addListener('click', function(){
- //              var blurbs = JSON.parse(<%= tourDB.blurbs.to_json.html_safe %>)
- //              var firstpan = blurbs[0].panoID
- //              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
- //              panorama.setPano(firstpan)
- //              blurbs.map(function(b){
- //                var blurbDiv = $('<div class = '+b.panoID+'></div>')
-
- //                blurbDiv.css('visibility', 'hidden')
- //                blurbDiv.css('position', 'absolute')
- //                blurbDiv.css('z-index', 3)
- //                blurbDiv.text(b.content)
- //                $('#pano').append(blurbDiv)
- //              })
- //              panorama.addListener('pano_changed', function(){
- //                blurbPositioner(panorama, blurbs)
- //              })
- //              panorama.addListener('pov_changed', function(){
- //                blurbPositioner(panorama, blurbs)
- //              })
- //            })
+ //          tourViewer()
+ //        })
+ //        map.addListener('zoom_changed',function(){
+ //          tourViewer()
+ //        })
+ //        $('#zipbutton').on('click', function(){
+ //          var address = $('#zipfinder').val()
+ //          findByZip(address)
+ //        })
+ //        $('#createTour').on('click', function(){
+ //          map.addListener('click', function(e){
+ //            var coords = {
+ //            lat: e.latLng.lat(),
+ //            lng: e.latLng.lng()
  //          }
- //        <% end %>
+ //            startLng = Number(coords.lng);
+ //            startLat = Number(coords.lat);
+ //            createTour(coords);
+ //          })
  //        })
  //      });
 
@@ -107,6 +61,46 @@
  //    });
  //  }
 
+ //  function tourViewer(){
+ //          var bounds = map.getBounds();
+ //        var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+ //        var sw = bounds.getSouthWest();
+ //           <% @tours.each do |tourDB| %>
+ //          var longitude = <%= tourDB.startLng %>
+ //          var latitude = <%= tourDB.startLat %>
+ //          if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
+ //            var startMarker = new google.maps.Marker({
+ //              position: {lat: latitude, lng: longitude},
+ //              map: map
+ //            })
+ //            startMarker.addListener('click', function(){
+ //              $('#my_popup').popup('show');
+ //              $('#createBlurb').css('visibility', 'hidden')
+ //              var blurbs = JSON.parse(<%= tourDB.blurbs.to_json.html_safe %>)
+ //              var firstpan = blurbs[0].panoID
+ //              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
+ //              panorama.setPano(firstpan)
+ //              blurbs.map(function(b){
+ //                var blurbDiv = $('<div class = '+b.panoID+'></div>')
+
+ //                blurbDiv.css('visibility', 'hidden')
+ //                blurbDiv.css('position', 'absolute')
+ //                blurbDiv.css('z-index', 3)
+ //                blurbDiv.text(b.content)
+ //                $('#pano').append(blurbDiv)
+ //              })
+ //              panorama.addListener('pano_changed', function(){
+ //                blurbPositioner(panorama, blurbs)
+ //              })
+ //              panorama.addListener('pov_changed', function(){
+ //                blurbPositioner(panorama, blurbs)
+ //              })
+ //            })
+ //          }
+ //        <% end %>
+ //  }
+
+
  //  function blurbPositioner(data, blurbs){
  //    blurbs.map(function(b){
  //      console.log(b)
@@ -116,7 +110,6 @@
  //          var xYCoords = headingPitchToXY(b.position.heading, b.position.pitch)
  //          var bottomOffset = 250 + Number(xYCoords.y)
  //          var leftOffset = 250 + Number(xYCoords.x)
-
  //          $('.'+b.panoID).css('bottom', bottomOffset+"px")
  //          $('.'+b.panoID).css('left', leftOffset+'px')
  //          console.log(xYCoords.x,data.pov.heading, b.position.heading)
@@ -141,7 +134,10 @@
  //        pov: {
  //          heading: 34,
  //          pitch: 10
- //        }
+ //        },
+ //        addressControl: false,
+ //        zoomControl: false,
+ //        fullscreenControl: false
  //      });
  //    $('#pano').on('mouseup', function(){
  //      console.log(panorama)
@@ -150,12 +146,15 @@
  //     console.log(panorama)
  //    })
  //    map.setStreetView(panorama);
+ //    $('#my_popup').popup('show')
  //  }
 
  //  function createBlurb(){
  //    $('#panoWriter').css('visibility', 'visible')
  //    $('#panoWriter').css('pointer-events', 'auto')
- //    $('#panoWriter').css('z-index', '2')
+ //    var writerZ = Number($('#my_popup_wrapper').css('z-index'))+5
+ //    $('#panoWriter').css('z-index', writerZ)
+ //    console.log(writerZ)
  //    if(panorama.pano!==currentPano){
  //      panNum +=1
  //    }
@@ -205,6 +204,7 @@
  //    $('#panoWriter').css('pointer-events', 'none')
  //    $('#panoWriter').css('z-index', '-2')
  //    $('#panoWriter').off('click')
+ //    $('#blurbInput').val('')
  //   }
 
 
@@ -212,8 +212,8 @@
  //  function xyToHeadingPitch(e){
  //    var x = e.e.offsetX;
  //    var y = e.e.offsetY;
- //    var width = parseInt($('#panoWriter').css('width'), 10)
- //    var height = parseInt($('#panoWriter').css('height'), 10)
+ //    var width = parseInt($('#pano').css('width'), 10)
+ //    var height = parseInt($('#pano').css('height'), 10)
  //    var headingChange = x - width/2;
  //    var heading = e.panorama.pov.heading + (headingChange/(width/90))
  //    if(heading > 360){
@@ -230,8 +230,8 @@
 
 
  //  function headingPitchToXY(h,p){
- //    var width = parseInt($('#panoWriter').css('width'), 10)
- //    var height = parseInt($('#panoWriter').css('height'), 10)
+ //    var width = parseInt($('#pano').css('width'), 10)
+ //    var height = parseInt($('#pano').css('height'), 10)
  //    var headingChange = h-panorama.pov.heading;
  //    var pitchChange = p-panorama.pov.pitch;
  //    var widthStretch = width/90;
@@ -246,21 +246,7 @@
  //  })
 
 
- //  $('#zipbutton').on('click', function(){
- //    var address = $('#zipfinder').val()
- //    findByZip(address)
- //  })
- //  $('#createTour').on('click', function(){
- //    map.addListener('click', function(e){
- //      var coords = {
- //      lat: e.latLng.lat(),
- //      lng: e.latLng.lng()
- //    }
- //      startLng = Number(coords.lng);
- //      startLat = Number(coords.lat);
- //      createTour(coords);
- //    })
- //  })
+
 
 
 

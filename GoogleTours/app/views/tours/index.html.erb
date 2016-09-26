@@ -1,21 +1,21 @@
-<h1>Map goes here</h1>
+<h1>Google Tours</h1>
     <input id = "zipfinder">
-    <h4>Enter Zip here</h4>
-    <button id = "zipbutton">submit</button>
+    <button id = "zipbutton">Search By Zip</button>
     <button id = "createTour">Create new Tour</button>
-    <button id = "saveTour"> Save your tour</button>
     <div id="map"></div>
     <div id = "my_popup">
       <button id = "createBlurb">Add a blurb</button>
+      <input id = "blurbInput"></input>
+      <button id = "blurbSave">Save your blurb</button>
+      <button id = "saveTour"> Save your tour</button>
       <div id = 'pano'>
         <div id = "panoWriter">
-          <input id = "blurbInput">Enter your blurb text</input>
-          <button id = "blurbSave">Save your blurb</button>
+
         </div>
       </div>
     </div>
   <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script>
-    <script>
+  <script>
   var geocoder;
   var map;
   var panorama;
@@ -24,7 +24,13 @@
   var startLat;
   var panNum = 1;
   var currentPano;
-  $('#my_popup').popup();
+  $('#my_popup').popup({
+    blur:false,
+    onclose: function(){
+      $('.blurbDiv').remove()
+      $('#saveTour').css('visibility', 'hidden')
+    }
+  });
  function initMap() {
     geocoder = new google.maps.Geocoder();
 
@@ -46,6 +52,24 @@
         tourViewer()
         map.addListener('dragend',function(){
           tourViewer()
+        })
+        map.addListener('zoom_changed',function(){
+          tourViewer()
+        })
+        $('#zipbutton').on('click', function(){
+          var address = $('#zipfinder').val()
+          findByZip(address)
+        })
+        $('#createTour').on('click', function(){
+          map.addListener('click', function(e){
+            var coords = {
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng()
+          }
+            startLng = Number(coords.lng);
+            startLat = Number(coords.lat);
+            createTour(coords);
+          })
         })
       });
 
@@ -77,11 +101,10 @@
               $('#createBlurb').css('visibility', 'hidden')
               var blurbs = JSON.parse(<%= tourDB.blurbs.to_json.html_safe %>)
               var firstpan = blurbs[0].panoID
-              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
+              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
               blurbs.map(function(b){
-                var blurbDiv = $('<div class = '+b.panoID+'></div>')
-
+                var blurbDiv = $('<div class = "'+b.panoID+' blurbDiv"></div>')
                 blurbDiv.css('visibility', 'hidden')
                 blurbDiv.css('position', 'absolute')
                 blurbDiv.css('z-index', 3)
@@ -104,7 +127,8 @@
     blurbs.map(function(b){
       console.log(b)
       if(data.pano == b.panoID){
-        if(b.position.heading > data.pov.heading - 45 && b.position.heading < data.pov.heading + 45){
+        // var leftBound = data.pov.heading - 45;
+        // if(b.position.heading > data.pov.heading - 45 && b.position.heading < data.pov.heading + 45){
           $('.'+b.panoID).css('visibility', 'visible')
           var xYCoords = headingPitchToXY(b.position.heading, b.position.pitch)
           var bottomOffset = 250 + Number(xYCoords.y)
@@ -113,7 +137,7 @@
           $('.'+b.panoID).css('left', leftOffset+'px')
           console.log(xYCoords.x,data.pov.heading, b.position.heading)
           console.log($('.'+b.panoID).css('left'))
-        }
+        // }
       }
       else{
         $('.'+b.panoID).css('visibility', 'hidden')
@@ -133,7 +157,10 @@
         pov: {
           heading: 34,
           pitch: 10
-        }
+        },
+        addressControl: false,
+        zoomControl: false,
+        fullscreenControl: false
       });
     $('#pano').on('mouseup', function(){
       console.log(panorama)
@@ -142,6 +169,7 @@
      console.log(panorama)
     })
     map.setStreetView(panorama);
+    $('#saveTour').css('visibility', 'visible')
     $('#my_popup').popup('show')
   }
 
@@ -200,6 +228,7 @@
     $('#panoWriter').css('pointer-events', 'none')
     $('#panoWriter').css('z-index', '-2')
     $('#panoWriter').off('click')
+    $('#blurbInput').val('')
    }
 
 
@@ -241,24 +270,10 @@
   })
 
 
-  $('#zipbutton').on('click', function(){
-    var address = $('#zipfinder').val()
-    findByZip(address)
-  })
-  $('#createTour').on('click', function(){
-    map.addListener('click', function(e){
-      var coords = {
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng()
-    }
-      startLng = Number(coords.lng);
-      startLat = Number(coords.lat);
-      createTour(coords);
-    })
-  })
+
 
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
     async defer></script>

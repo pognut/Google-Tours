@@ -12,9 +12,9 @@ class ToursController < ApplicationController
 end
 
 # Left to do:
-# * Clean up code (at least that giant ass listener at the start)
-# * Double check heading wrap around
-# * Remove unnecessary controls
-# * Create pop up windows for street view, at least. Try for blurbs as well.
-# * Prettify and center.
+# * Clean up code (at least that giant ass listener at the start) Done(enough)
+# * Double check heading wrap around !!! done?
+# * Remove unnecessary controls Done
+# * Create pop up windows for street view, at least. Try for blurbs as well. Done
+# * Prettify and center. DONE
 # * If time, whip up demo tour.
