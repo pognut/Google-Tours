@@ -75,7 +75,6 @@
           var bounds = map.getBounds();
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest();
-        debugger
           for(var i = 0; i < toursJS.length; i++){
           longitude = Number(toursJS[i].startLng)
           latitude = Number(toursJS[i].startLat)
@@ -90,7 +89,6 @@
               $('#createBlurb').css('visibility', 'hidden')
               var blurbs = toursJS[i].blurbs
               var firstpan = blurbs[0].panoID
-              debugger;
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
               blurbs.map(function(b){
