@@ -88,7 +88,7 @@
             })
             startMarker.addListener('click', function(){
               console.log('hitting')
-              $('#my_popup').popup('show');
+              $('#my_popup').popup('show', {blur:false});
               $('#createBlurb').css('visibility', 'hidden')
               var currentTour = value.blurbs
               console.log(currentTour)
@@ -164,7 +164,7 @@
     map.setStreetView(panorama);
     $('#saveTour').css('visibility', 'visible')
     $('#createBlurb').css('visibility', 'visible')
-    $('#my_popup').popup('show')
+    $('#my_popup').popup('show',{blur:false})
   }
 
   function createBlurb(){
