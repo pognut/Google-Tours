@@ -16,7 +16,7 @@
     }
   });
  function initMap() {
-
+    $.fn.popup.defaults.blur = false;
     geocoder = new google.maps.Geocoder();
 
     navigator.geolocation.getCurrentPosition(function(position){
