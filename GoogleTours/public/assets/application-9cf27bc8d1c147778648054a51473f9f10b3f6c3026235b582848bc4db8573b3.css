@@ -1,0 +1,98 @@
+/* line 4, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map-container {
+  height: 75vw;
+  width: 75vw;
+  margin: 0 auto;
+}
+
+/* line 10, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+nav {
+  text-align: right;
+  margin-right: 10%;
+}
+
+/* line 15, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map {
+  height: 80%;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* line 22, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map-container > * {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* line 28, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#my_popup {
+  height: 500px;
+  width: 500px;
+}
+
+/* line 33, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#pano {
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* line 39, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#panoWriter {
+  height: 100%;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* line 47, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#blurbInput {
+  visibility: hidden;
+}
+
+/* line 51, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#blurbSave {
+  visibility: hidden;
+}
+
+/* line 55, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#saveTour {
+  visibility: hidden;
+}
+
+/* line 59, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.blurbDiv {
+  background: white;
+  border: solid 1px black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/* line 66, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#jsdiv {
+  height: 1px;
+}
+
+/* line 70, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#my_popup {
+  visibility: hidden;
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+
