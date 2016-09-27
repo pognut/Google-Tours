@@ -198,6 +198,7 @@
       "data": {tour: tourString, startLng: startLng, startLat: startLat},
       success: function(){
         console.log('tour saved')
+        location.reload()
       }
     })
   }
