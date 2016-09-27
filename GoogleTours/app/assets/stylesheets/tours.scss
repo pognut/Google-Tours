@@ -27,7 +27,8 @@ nav{
 
 #my_popup {
   height: 500px;
-  width: 500px
+  width: 500px;
+  visibility: hidden;
 }
 
 #pano{
@@ -67,6 +68,3 @@ nav{
   height: 1px;
 }
 
-#my_popup{
-  visibility: hidden;
-}

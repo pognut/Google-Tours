@@ -9,7 +9,7 @@
   $('#my_popup').popup({
     blur:false,
     onclose: function(){
-      $('.blurbDiv').remove()
+      $('.blurbDiv').css('visibility', 'hidden')
       $('#saveTour').css('visibility', 'hidden')
       $('#panoWriter').css('visibility', 'hidden')
       $('#panoWriter').css('pointer-events', 'none')
