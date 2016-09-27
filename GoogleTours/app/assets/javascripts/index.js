@@ -11,6 +11,8 @@
     onclose: function(){
       $('.blurbDiv').remove()
       $('#saveTour').css('visibility', 'hidden')
+      $('#panoWriter').css('visibility', 'hidden')
+      $('#panoWriter').css('pointer-events', 'none')
     }
   });
  function initMap() {
@@ -44,6 +46,7 @@
           findByZip(address)
         })
         $('#createTour').on('click', function(){
+          alert('Click your desired start point on the map!')
           map.addListener('click', function(e){
             var coords = {
             lat: e.latLng.lat(),
