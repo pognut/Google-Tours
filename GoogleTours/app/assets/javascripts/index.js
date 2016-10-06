@@ -6,15 +6,15 @@
   var startLat;
   var panNum = 1;
   var currentPano;
-  $('#my_popup').popup({
-    blur:false,
-    onclose: function(){
-      $('.blurbDiv').css('visibility', 'hidden')
-      $('#saveTour').css('visibility', 'hidden')
-      $('#panoWriter').css('visibility', 'hidden')
-      $('#panoWriter').css('pointer-events', 'none')
-    }
-  });
+  // $('#my_popup').popup({
+  //   blur:false,
+  //   onclose: function(){
+  //     $('.blurbDiv').css('visibility', 'hidden')
+  //     $('#saveTour').css('visibility', 'hidden')
+  //     $('#panoWriter').css('visibility', 'hidden')
+  //     $('#panoWriter').css('pointer-events', 'none')
+  //   }
+  // });
  function initMap() {
     $.fn.popup.defaults.blur = false;
     geocoder = new google.maps.Geocoder();
@@ -68,6 +68,7 @@
     geocoder.geocode( { 'address': zip}, function(results, status) {
       if (status == 'OK') {
         map.setCenter(results[0].geometry.location);
+        tourViewer();
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
@@ -75,7 +76,8 @@
   }
 
   function tourViewer(){
-          var bounds = map.getBounds();
+        $('.blurbDiv').css('visibility', 'hidden')
+        var bounds = map.getBounds();
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest();
         $.each(toursJS, function(index, value){
@@ -88,7 +90,15 @@
             })
             startMarker.addListener('click', function(){
               console.log('hitting')
-              $('#my_popup').popup('show', {blur:false});
+              $('#my_popup').popup({
+                blur:false,
+                onclose: function(){
+                  $('.blurbDiv').css('visibility', 'hidden')
+                  $('#saveTour').css('visibility', 'hidden')
+                  $('#panoWriter').css('visibility', 'hidden')
+                  $('#panoWriter').css('pointer-events', 'none')
+                }
+              });
               $('#createBlurb').css('visibility', 'hidden')
               var currentTour = value.blurbs
               console.log(currentTour)
