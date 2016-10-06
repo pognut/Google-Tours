@@ -76,7 +76,7 @@
   }
 
   function tourViewer(){
-        $('.blurbDiv').css('visibility', 'hidden')
+
         var bounds = map.getBounds();
         var ne = bounds.getNorthEast(); // LatLng of the north-east corner
         var sw = bounds.getSouthWest();
@@ -89,8 +89,9 @@
               map: map
             })
             startMarker.addListener('click', function(){
+              $('.blurbDiv').css('visibility', 'hidden')
               console.log('hitting')
-              $('#my_popup').popup({
+              $('#my_popup').popup('show',{
                 blur:false,
                 onclose: function(){
                   $('.blurbDiv').css('visibility', 'hidden')
@@ -99,7 +100,6 @@
                   $('#panoWriter').css('pointer-events', 'none')
                 }
               });
-              $('#createBlurb').css('visibility', 'hidden')
               var currentTour = value.blurbs
               console.log(currentTour)
               var blurbs = JSON.parse(currentTour)
