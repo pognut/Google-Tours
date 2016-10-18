@@ -4,7 +4,7 @@
   var tour = []
   var startLng;
   var startLat;
-  var panNum = 1;
+  var panNum = 0;
   var currentPano;
   // $('#my_popup').popup({
   //   blur:false,
@@ -35,10 +35,7 @@
       //LAT IS Y LNG IS X
       google.maps.event.addListenerOnce(map, 'idle', function(){
         tourViewer()
-        map.addListener('dragend',function(){
-          tourViewer()
-        })
-        map.addListener('zoom_changed',function(){
+        map.addListener('bounds_changed',function(){
           tourViewer()
         })
         $('#zipbutton').on('click', function(){
@@ -61,6 +58,7 @@
           console.log('works')
           createBlurb()
         })
+
       });
 
     })};
@@ -75,20 +73,16 @@
     });
   }
 
-  function tourViewer(){
+  function tourControls(dir, value){
+    console.log(value)
+    var currentTour = value.blurbs
+    console.log(currentTour)
+    var blurbs = JSON.parse(currentTour)
+    newCurrent = panNum + dir
+    panorama.setPano(blurbs[newCurrent].panoID)
+  }
 
-        var bounds = map.getBounds();
-        var ne = bounds.getNorthEast(); // LatLng of the north-east corner
-        var sw = bounds.getSouthWest();
-        $.each(toursJS, function(index, value){
-          longitude = Number(value.startLng)
-          latitude = Number(value.startLat)
-          if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
-            var startMarker = new google.maps.Marker({
-              position: {lat: latitude, lng: longitude},
-              map: map
-            })
-            startMarker.addListener('click', function(){
+  function tourMarker(value){
               $('.blurbDiv').css('visibility', 'hidden')
               console.log('hitting')
               $('#my_popup').popup('show',{
@@ -104,6 +98,7 @@
               console.log(currentTour)
               var blurbs = JSON.parse(currentTour)
               var firstpan = blurbs[0].panoID
+              // blurbs[pannum-1].panoid
               panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
               blurbs.map(function(b){
@@ -120,10 +115,34 @@
               panorama.addListener('pov_changed', function(){
                 blurbPositioner(panorama, blurbs)
               })
+            }
+
+  function tourViewer(){
+    panNum = 1;
+    var bounds = map.getBounds();
+    var ne = bounds.getNorthEast(); // LatLng of the north-east corner
+    var sw = bounds.getSouthWest();
+      $.each(gon.tours, function(index, value){
+        longitude = Number(value.startLng)
+        latitude = Number(value.startLat)
+        if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
+          var startMarker = new google.maps.Marker({
+            position: {lat: latitude, lng: longitude},
+            map: map
+          })
+          startMarker.addListener('click', function(){
+                  console.log(this)
+            tourMarker(value)
+            $('#forward').on('click', function(){
+              tourControls(1, value)
             })
-          }
-  })
-}
+            $('#backward').on('click', function(){
+              tourControls(-1, value)
+            })
+        })
+      }
+    })
+  }
 
 
   function blurbPositioner(data, blurbs){
@@ -206,8 +225,8 @@
     tourString = JSON.stringify(tour)
     $.ajax({
       "dataType": 'JSON',
-      "url": '/tours',
-      "method": 'post',
+      "url": '/tours/',
+      "method": 'POST',
       "data": {tour: tourString, startLng: startLng, startLat: startLat},
       success: function(){
         console.log('tour saved')

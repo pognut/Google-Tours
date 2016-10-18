@@ -9,16 +9,16 @@
       <input id = "blurbInput"></input>
       <button id = "blurbSave">Save your blurb</button>
       <button id = "saveTour"> Save your tour</button>
+      <div id = 'tour-controls'>
+        <button id = 'forward' class = 'tour-control' dataID = '0'>Forwards</button>
+        <button id = 'backward' class = 'tour-control' dataID = '1'>Backwards</button>
+      </div>
       <div id = 'pano'>
+
         <div id = "panoWriter">
 
         </div>
       </div>
     </div>
-<div id = "jsdiv" style = 'visibility: hidden'>
-<%= javascript_tag do %>
-  var toursJS = <%= @tours.to_json.html_safe %>;
-<% end %>
-</div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDotGfDqVxf7emqBFgRm3n03u3hQjbxiBo&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=GMKEY&callback=initMap"
     async defer></script>
