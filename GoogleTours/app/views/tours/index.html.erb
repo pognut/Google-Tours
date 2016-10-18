@@ -3,22 +3,27 @@
     <button id = "zipbutton">Search By Zip</button>
     <button id = "createTour">Create new Tour</button>
     <div id="map"></div>
-    <div id = "my_popup">
+    <div id = "view_popup" class = "popup">
+      <h5>Hit escape to return to the map</h5>
+      <div id = 'tour-controls'>
+        <button id = 'forward' class = 'tour-control' dataID = '0'>Forwards</button>
+        <button id = 'backward' class = 'tour-control' dataID = '1'>Backwards</button>
+      </div>
+      <div id = 'panoView'>
+        <div id = "panoWriter">
+        </div>
+      </div>
+    </div>
+    <div id = "create_popup" class = "popup">
       <h5>Hit escape to return to the map</h5>
       <button id = "createBlurb">Add a blurb</button>
       <input id = "blurbInput"></input>
       <button id = "blurbSave">Save your blurb</button>
       <button id = "saveTour"> Save your tour</button>
-      <div id = 'tour-controls'>
-        <button id = 'forward' class = 'tour-control' dataID = '0'>Forwards</button>
-        <button id = 'backward' class = 'tour-control' dataID = '1'>Backwards</button>
-      </div>
-      <div id = 'pano'>
-
+      <div id = 'panoCreate'>
         <div id = "panoWriter">
-
         </div>
       </div>
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=GMKEY&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GMKEY"] %>&callback=initMap"
     async defer></script>

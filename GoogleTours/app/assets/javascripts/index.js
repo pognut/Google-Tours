@@ -85,7 +85,7 @@
   function tourMarker(value){
               $('.blurbDiv').css('visibility', 'hidden')
               console.log('hitting')
-              $('#my_popup').popup('show',{
+              $('#view-popup').popup('show',{
                 blur:false,
                 onclose: function(){
                   $('.blurbDiv').css('visibility', 'hidden')
@@ -99,7 +99,7 @@
               var blurbs = JSON.parse(currentTour)
               var firstpan = blurbs[0].panoID
               // blurbs[pannum-1].panoid
-              panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), {zoomControl: false, addressControl: false, fullscreenControl: false});
+              panorama = new google.maps.StreetViewPanorama(document.getElementById('panoView'), {zoomControl: false, addressControl: false, fullscreenControl: false});
               panorama.setPano(firstpan)
               blurbs.map(function(b){
                 var blurbDiv = $('<div class = "'+b.panoID+' blurbDiv"></div>')
@@ -107,7 +107,7 @@
                 blurbDiv.css('position', 'absolute')
                 blurbDiv.css('z-index', 100010)
                 blurbDiv.text(b.content)
-                $('#pano').append(blurbDiv)
+                $('#panoView').append(blurbDiv)
               })
               panorama.addListener('pano_changed', function(){
                 blurbPositioner(panorama, blurbs)
@@ -174,7 +174,7 @@
     //   map: map
     // })
   panorama = new google.maps.StreetViewPanorama(
-    document.getElementById('pano'), {
+    document.getElementById('panoCreate'), {
         position: coords,
         pov: {
           heading: 34,
@@ -184,22 +184,22 @@
         zoomControl: false,
         fullscreenControl: false
       });
-    $('#pano').on('mouseup', function(){
-      console.log(panorama)
-    })
+    // $('#pano').on('mouseup', function(){
+    //   console.log(panorama)
+    // })
     panorama.addListener('click', function(){
      console.log(panorama)
     })
     map.setStreetView(panorama);
     $('#saveTour').css('visibility', 'visible')
     $('#createBlurb').css('visibility', 'visible')
-    $('#my_popup').popup('show',{blur:false})
+    $('#create-popup').popup('show',{blur:false})
   }
 
   function createBlurb(){
     $('#panoWriter').css('visibility', 'visible')
     $('#panoWriter').css('pointer-events', 'auto')
-    var writerZ = Number($('#my_popup_wrapper').css('z-index'))+5
+    var writerZ = Number($('#create-popup_wrapper').css('z-index'))+5
     $('#panoWriter').css('z-index', writerZ)
     console.log(writerZ)
     if(panorama.pano!==currentPano){
@@ -258,8 +258,8 @@
   function xyToHeadingPitch(e){
     var x = e.e.offsetX;
     var y = e.e.offsetY;
-    var width = parseInt($('#pano').css('width'), 10)
-    var height = parseInt($('#pano').css('height'), 10)
+    var width = parseInt($('#panoCreate').css('width'), 10)
+    var height = parseInt($('#panoCreate').css('height'), 10)
     var headingChange = x - width/2;
     var heading = e.panorama.pov.heading + (headingChange/(width/90))
     if(heading > 360){
@@ -276,8 +276,8 @@
 
 
   function headingPitchToXY(h,p){
-    var width = parseInt($('#pano').css('width'), 10)
-    var height = parseInt($('#pano').css('height'), 10)
+    var width = parseInt($('#panoView').css('width'), 10)
+    var height = parseInt($('#panoView').css('height'), 10)
     var headingChange = h-panorama.pov.heading;
     var pitchChange = p-panorama.pov.pitch;
     var widthStretch = width/90;
