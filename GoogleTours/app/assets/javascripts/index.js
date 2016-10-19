@@ -17,51 +17,58 @@
   // });
  function initMap() {
     $.fn.popup.defaults.blur = false;
-    geocoder = new google.maps.Geocoder();
+    if(navigator.geolocation){
+      geocoder = new google.maps.Geocoder();
 
-    navigator.geolocation.getCurrentPosition(function(position){
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      var mapOptions = {
-        center: new google.maps.LatLng(pos.lat, pos.lang),
-        zoom: 14,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        streetViewControl: false
-      }
-      map = new google.maps.Map(document.getElementById('map'), mapOptions)
-      map.setCenter(pos)
-      //LAT IS Y LNG IS X
-      google.maps.event.addListenerOnce(map, 'idle', function(){
-        tourViewer()
-        map.addListener('bounds_changed',function(){
+      navigator.geolocation.getCurrentPosition(function(position){
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        // if(navigator.geolocation.getCurrentPosition)
+        var mapOptions = {
+          center: new google.maps.LatLng(pos.lat, pos.lang),
+          zoom: 14,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          streetViewControl: false
+        }
+        map = new google.maps.Map(document.getElementById('map'), mapOptions)
+        map.setCenter(pos)
+        //LAT IS Y LNG IS X
+        google.maps.event.addListenerOnce(map, 'idle', function(){
           tourViewer()
-        })
-        $('#zipbutton').on('click', function(){
-          var address = $('#zipfinder').val()
-          findByZip(address)
-        })
-        $('#createTour').on('click', function(){
-          alert('Click your desired start point on the map!')
-          map.addListener('click', function(e){
-            var coords = {
-            lat: e.latLng.lat(),
-            lng: e.latLng.lng()
-          }
-            startLng = Number(coords.lng);
-            startLat = Number(coords.lat);
-            createTour(coords);
+          map.addListener('bounds_changed',function(){
+            tourViewer()
           })
-        })
-        $('#createBlurb').on('click', function(){
-          console.log('works')
-          createBlurb()
-        })
+          $('#zipbutton').on('click', function(){
+            var address = $('#zipfinder').val()
+            findByZip(address)
+          })
+          $('#createTour').on('click', function(){
+            alert('Click your desired start point on the map!')
+            map.addListener('click', function(e){
+              var coords = {
+              lat: e.latLng.lat(),
+              lng: e.latLng.lng()
+            }
+              startLng = Number(coords.lng);
+              startLat = Number(coords.lat);
+              createTour(coords);
+            })
+          })
+          $('#createBlurb').on('click', function(){
+            console.log('works')
+            createBlurb()
+          })
 
-      });
+        });
 
-    })};
+      })
+    }
+    else {
+      alert("Please enter your zip")
+    }
+  };
   function findByZip(zip){
     geocoder.geocode( { 'address': zip}, function(results, status) {
       if (status == 'OK') {
