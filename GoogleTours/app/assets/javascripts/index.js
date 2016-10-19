@@ -4,7 +4,7 @@
   var tour = []
   var startLng;
   var startLat;
-  var panNum = 0;
+  var panNum;
   var currentPano;
   // $('#my_popup').popup({
   //   blur:false,
@@ -139,7 +139,8 @@
           })
           startMarker.addListener('click', function(){
                   console.log(this)
-            tourMarker(value)
+            tourPreview(value, startMarker)
+            // tourMarker(value)
             $('#forward').on('click', function(){
               tourControls(1, value)
             })
@@ -151,6 +152,20 @@
     })
   }
 
+  function tourPreview(value, marker){
+    var contentString = $("<button id = tourStart>blah</button>")
+    // contentString.on('click', function(){
+    //   console.log('asdf;asdf')
+    // })
+    var infowindow = new google.maps.InfoWindow({
+    })
+    infowindow.setContent(contentString[0])
+    infowindow.open(map, marker)
+    setTimeout(function(){$('#tourStart').on('click', function(){
+        console.log('lajsdhflasdhf')
+        tourMarker(value)
+      })},50)
+  }
 
   function blurbPositioner(data, blurbs){
     blurbs.map(function(b){
@@ -180,6 +195,7 @@
     //   position: coords,
     //   map: map
     // })
+  panNum = 0;
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById('panoCreate'), {
         position: coords,
