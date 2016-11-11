@@ -1,4 +1,4 @@
- var geocoder;
+  var geocoder;
   var map;
   var panorama;
   var tour = []
@@ -6,6 +6,7 @@
   var startLat;
   var panNum;
   var currentPano;
+  var markerTrack = []
   // $('#my_popup').popup({
   //   blur:false,
   //   onclose: function(){
@@ -15,6 +16,8 @@
   //     $('#panoWriter').css('pointer-events', 'none')
   //   }
   // });
+
+
  function initMap() {
     $.fn.popup.defaults.blur = false;
     if(navigator.geolocation){
@@ -36,9 +39,11 @@
         map.setCenter(pos)
         //LAT IS Y LNG IS X
         google.maps.event.addListenerOnce(map, 'idle', function(){
-          tourViewer()
-          map.addListener('bounds_changed',function(){
-            tourViewer()
+          // tourViewer()
+          tourMarkerPopulate(map.getBounds())
+          map.addListener('tilesloaded',function(){
+            // tourViewer()
+            tourMarkerPopulate(map.getBounds())
           })
           $('#zipbutton').on('click', function(){
             var address = $('#zipfinder').val()
@@ -60,6 +65,10 @@
             console.log('works')
             createBlurb()
           })
+          $('#ajaxTest').on('click', function(){
+            tourMarkerPopulate(map.getBounds())
+            //feed in bounds
+          })
 
         });
 
@@ -73,7 +82,7 @@
     geocoder.geocode( { 'address': zip}, function(results, status) {
       if (status == 'OK') {
         map.setCenter(results[0].geometry.location);
-        tourViewer();
+        tourMarkerPopulate();
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
@@ -89,7 +98,33 @@
     panorama.setPano(blurbs[newCurrent].panoID)
   }
 
-  function tourMarker(value){
+   function tourMarkerPopulate(bounds){
+    console.log(bounds)
+    boundsJSON = JSON.stringify(bounds)
+     $.ajax({
+      "url":"/populate",
+      "method":"get",
+      "data":{bounds:boundsJSON}
+      //feed bounds to controller
+    }).done(function(data){
+      console.log('yay')
+      console.log(data)
+      tourMarker(data)
+    })
+ }
+
+  function blurbRetrieval(id){
+    $.ajax({
+      "url":"/content",
+      "method":"get",
+      "data":{id:id}
+    }).done(function(data){
+      console.log(data)
+      tourViewer(data)
+    })
+  }
+
+  function tourViewer(value){
               $('.blurbDiv').css('visibility', 'hidden')
               console.log('hitting')
               $('#view-popup').popup('show',{
@@ -101,9 +136,9 @@
                   $('#panoWriter').css('pointer-events', 'none')
                 }
               });
-              var currentTour = value.blurbs
-              console.log(currentTour)
-              var blurbs = JSON.parse(currentTour)
+              // var currentTour = value.blurbs
+              // console.log(currentTour)
+              var blurbs = JSON.parse(value)
               var firstpan = blurbs[0].panoID
               // blurbs[pannum-1].panoid
               panorama = new google.maps.StreetViewPanorama(document.getElementById('panoView'), {zoomControl: false, addressControl: false, fullscreenControl: false});
@@ -124,30 +159,35 @@
               })
             }
 
-  function tourViewer(){
+
+  function tourMarker(tourData){
     panNum = 1;
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast(); // LatLng of the north-east corner
     var sw = bounds.getSouthWest();
-      $.each(gon.tours, function(index, value){
-        longitude = Number(value.startLng)
-        latitude = Number(value.startLat)
+      $.each(tourData, function(index, value){
+        longitude = Number(value[0])
+        latitude = Number(value[1])
+        var id = value[2]
         if(ne.lng() > longitude && longitude > sw.lng() && ne.lat() > latitude && latitude > sw.lat()){
-          var startMarker = new google.maps.Marker({
-            position: {lat: latitude, lng: longitude},
-            map: map
+          //add the markerTrack check here
+          if(markerTrack.includes(id)===false){
+            var startMarker = new google.maps.Marker({
+              position: {lat: latitude, lng: longitude},
+              map: map
+            })
+            startMarker.addListener('click', function(){
+                    console.log(this)
+              tourPreview(value, startMarker)
+              // tourMarker(value)
+              $('#forward').on('click', function(){
+                tourControls(1, value)
+              })
+              $('#backward').on('click', function(){
+                tourControls(-1, value)
+              })
           })
-          startMarker.addListener('click', function(){
-                  console.log(this)
-            tourPreview(value, startMarker)
-            // tourMarker(value)
-            $('#forward').on('click', function(){
-              tourControls(1, value)
-            })
-            $('#backward').on('click', function(){
-              tourControls(-1, value)
-            })
-        })
+        }
       }
     })
   }
@@ -163,7 +203,7 @@
     infowindow.open(map, marker)
     setTimeout(function(){$('#tourStart').on('click', function(){
         console.log('lajsdhflasdhf')
-        tourMarker(value)
+        blurbRetrieval(value[2])
       })},50)
   }
 
@@ -250,7 +290,7 @@
       "dataType": 'JSON',
       "url": '/tours/',
       "method": 'POST',
-      "data": {tour: tourString, startLng: startLng, startLat: startLat},
+      "data": {tour: tourString, startLng: startLng, startLat: startLat, preview: "TEST"},
       success: function(){
         console.log('tour saved')
         location.reload()

@@ -2,6 +2,7 @@
     <input id = "zipfinder">
     <button id = "zipbutton">Search By Zip</button>
     <button id = "createTour">Create new Tour</button>
+    <button id = "ajaxTest">TESTING</button>
     <div id="map"></div>
     <div id = "view-popup" class = "popup">
       <h5>Hit escape to return to the map</h5>
@@ -12,6 +13,7 @@
       <div id = 'panoView' class = 'pano'>
       </div>
     </div>
+
     <div id = "create-popup" class = "popup">
       <h5>Hit escape to return to the map</h5>
       <button id = "createBlurb">Add a blurb</button>
@@ -23,5 +25,6 @@
         </div>
       </div>
     </div>
+
     <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GMKEY"] %>&callback=initMap"
     async defer></script>
