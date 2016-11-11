@@ -19,11 +19,16 @@
       <button id = "createBlurb">Add a blurb</button>
       <input id = "blurbInput"></input>
       <button id = "blurbSave">Save your blurb</button>
-      <button id = "saveTour"> Save your tour</button>
+      <button id = "addPreview">Add a preview</button>
       <div id = 'panoCreate' class = 'pano'>
         <div id = "panoWriter" class = 'pano'>
         </div>
       </div>
+    </div>
+
+    <div id = "preview-popup" class = "popup">
+      <button id = "saveTour">Save your tour</button>
+      <input id = "previewInput"></div>
     </div>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GMKEY"] %>&callback=initMap"

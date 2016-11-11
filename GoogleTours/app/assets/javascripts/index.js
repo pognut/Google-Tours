@@ -193,7 +193,7 @@
   }
 
   function tourPreview(value, marker){
-    var contentString = $("<button id = tourStart>blah</button>")
+    var contentString = $("<button id = tourStart>"+value[3]+"</button>")
     // contentString.on('click', function(){
     //   console.log('asdf;asdf')
     // })
@@ -250,9 +250,9 @@
     // $('#pano').on('mouseup', function(){
     //   console.log(panorama)
     // })
-    panorama.addListener('click', function(){
-     console.log(panorama)
-    })
+    // panorama.addListener('click', function(){
+    //  console.log(panorama)
+    // })
     map.setStreetView(panorama);
     $('#saveTour').css('visibility', 'visible')
     $('#createBlurb').css('visibility', 'visible')
@@ -278,19 +278,27 @@
     })
     $('#blurbSave').on('click', function(){
       saveBlurb(clickPoint)
-      $('#saveTour').on('click', function(){
-        saveTour()
+      $('#addPreview').on('click', function(){
+        savePreview()
       })
     })
   }
 
-  function saveTour(){
+  function savePreview(){
+    $('#preview-popup').popup('show',{blur:false})
+    $('#saveTour').on('click', function(){
+      prev = $('#previewInput').val()
+      saveTour(prev)
+    })
+  }
+
+  function saveTour(preview){
     tourString = JSON.stringify(tour)
     $.ajax({
       "dataType": 'JSON',
       "url": '/tours/',
       "method": 'POST',
-      "data": {tour: tourString, startLng: startLng, startLat: startLat, preview: "TEST"},
+      "data": {tour: tourString, startLng: startLng, startLat: startLat, preview: preview},
       success: function(){
         console.log('tour saved')
         location.reload()
