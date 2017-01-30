@@ -1,6 +1,6 @@
 class ToursController < ApplicationController
   def index
-    # gon.tours = Tour.all
+    gon.tours = Tour.all
   end
 
   def create

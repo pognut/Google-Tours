@@ -1,3 +1,4 @@
+//A bunch of ugly global variables, to be eliminated as the code is refined
   var geocoder;
   var map;
   var panorama;
@@ -18,8 +19,10 @@
   // });
 
 
+//initializes the map
  function initMap() {
     $.fn.popup.defaults.blur = false;
+    //check for shared location
     if(navigator.geolocation){
       geocoder = new google.maps.Geocoder();
 
@@ -35,12 +38,15 @@
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           streetViewControl: false
         }
+        //creates the map
         map = new google.maps.Map(document.getElementById('map'), mapOptions)
         map.setCenter(pos)
         //LAT IS Y LNG IS X
+        //waits for the map to load fully, then fires tourMarkerPopulate to pull tour starting locations from DB
         google.maps.event.addListenerOnce(map, 'idle', function(){
           // tourViewer()
           tourMarkerPopulate(map.getBounds())
+          //
           map.addListener('tilesloaded',function(){
             // tourViewer()
             tourMarkerPopulate(map.getBounds())
@@ -78,6 +84,8 @@
       alert("Please enter your zip")
     }
   };
+
+  //lets users set map center to their zip code
   function findByZip(zip){
     geocoder.geocode( { 'address': zip}, function(results, status) {
       if (status == 'OK') {
@@ -89,6 +97,7 @@
     });
   }
 
+  //controller function for the forwards and backwards buttons in tour view mode
   function tourControls(dir, value){
     console.log(value)
     var currentTour = value.blurbs
@@ -98,6 +107,7 @@
     panorama.setPano(blurbs[newCurrent].panoID)
   }
 
+   //wrapper for ajax call to get tour start point data from database.
    function tourMarkerPopulate(bounds){
     console.log(bounds)
     boundsJSON = JSON.stringify(bounds)
@@ -113,6 +123,7 @@
     })
  }
 
+  //wraps ajax call to database for individual tour content.
   function blurbRetrieval(id){
     $.ajax({
       "url":"/content",
@@ -123,6 +134,7 @@
       tourViewer(data)
     })
   }
+
 
   function tourViewer(value){
               $('.blurbDiv').css('visibility', 'hidden')
