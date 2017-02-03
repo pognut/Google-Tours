@@ -1,0 +1,6 @@
+var Panorama = React.createClass({
+
+  render: function() {
+    return <div />;
+  }
+});
