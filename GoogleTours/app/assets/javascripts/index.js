@@ -54,6 +54,7 @@
           $('#zipbutton').on('click', function(){
             var address = $('#zipfinder').val()
             findByZip(address)
+            console.log(address)
           })
           $('#createTour').on('click', function(){
             alert('Click your desired start point on the map!')
@@ -85,11 +86,14 @@
     }
   };
 
+
+
   //lets users set map center to their zip code
   function findByZip(zip){
     geocoder.geocode( { 'address': zip}, function(results, status) {
       if (status == 'OK') {
         map.setCenter(results[0].geometry.location);
+        console.log(results)
         tourMarkerPopulate();
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
