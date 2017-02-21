@@ -93,6 +93,19 @@ nav{
 
 #testPano{
   height:100%;
+
+}
+
+.blurb{
+  background: white;
+  border: solid 1px black;
+  border-radius: 5px;
+  z-index: 1000;
+  position: absolute;
+}
+
+#sigh{
+  height:100%;
 }
 
 body{

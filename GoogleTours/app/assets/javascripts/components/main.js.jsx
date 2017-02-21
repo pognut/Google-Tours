@@ -10,22 +10,30 @@ var Main = React.createClass({
 
   //consider moving most of this state stuff down to map
 
+  //current tour states: blurbs{panNum, panoID, text, heading/pitch(?)}, startLoc, preview, tourID,
   getInitialState: function() {
     //see if this might go better in componentwillmount or whatever
     return {
       location:{lat:null, lng:null},
       havelocation: false,
       bounds: null,
+      //holds the map element
       map: null,
+      //holds the street view panorama element
       panorama: null,
-      blurbs: null,
+      //holds an array with objects representing each blurb.
+      blurbs: [],
+      //start coords
       startLoc: null,
+      //current pan in tour sequence
       panNum: null,
+      //current google panoID
       panoID: null,
       isCreating: false,
       isViewing: false,
       markers: null,
-      visibleBlurbs: null,
+      //currently visible blurbs, currently unneccessary
+      visibleBlurbs: [],
       heading: null,
       pitch: null,
       zipInput: null,
@@ -285,14 +293,13 @@ var Main = React.createClass({
       this.setState({isCreating:false})
     }
   },
-
+  //should definitely turn into dedicated modal opener/toggler
   startCreating: function(coords){
     this.setState({startLoc:coords, modalIsOpen:true})
   },
 
   setPanorama: function(){
     var testing = document.getElementById('testPano');
-    debugger;
     panorama = new google.maps.StreetViewPanorama(
       document.getElementById('testPano'), {
         position: this.state.startLoc,
@@ -304,9 +311,180 @@ var Main = React.createClass({
         zoomControl: false,
         fullscreenControl: false
       });
+    var setPanoID = this.setPanoID
+    var blurbPositioner = this.blurbPositioner
+    panorama.addListener('pano_changed', function(){
+      var panoID = panorama.getPano()
+      setPanoID(panoID)
+      blurbPositioner()
+    })
+    panorama.addListener('pov_changed', function(){
+      blurbPositioner()
+    })
     this.state.map.setStreetView(panorama);
     console.log(this.state.startLoc, panorama)
     this.setState({panorama:panorama})
+  },
+
+  setPanoID: function(panoID){
+    this.setState({panoID:panoID})
+  },
+
+
+  setPanNum: function(){
+    //if no first pan yet, this is first pan
+    if(this.state.panNum===null){
+      this.setState({panNum:1})
+    }
+    //if previously used pan, this is that pan
+    // else if (this.state.visibleBlurbs===true){
+
+    // }
+    else {
+      var newPan = this.state.panNum + 1
+      this.setState({panNum:newPan})
+    }
+    //if not previously used and not first, this is panNum + 1
+  },
+   get3dFov: function(zoom) {
+  return zoom <= 2 ?
+      126.5 - zoom * 36.75 :  // linear descent
+      195.93 / Math.pow(1.92, zoom); // parameters determined experimentally
+  },
+    povToPixel3d: function(targetPov) {
+    var zoom = this.state.panorama.getZoom()
+    var currentPov = this.state.panorama.getPov()
+    // Gather required variables and convert to radians where necessary
+    var width = $('#testPano').width();
+    var height = $('#testPano').height();
+    var target = {
+      left: width / 2,
+      top: height / 2
+    };
+
+    var DEG_TO_RAD = Math.PI / 180.0;
+    var fov = this.get3dFov(zoom) * DEG_TO_RAD;
+    var h0 = currentPov.heading * DEG_TO_RAD;
+    var p0 = currentPov.pitch * DEG_TO_RAD;
+    var h = targetPov.heading * DEG_TO_RAD;
+    var p = targetPov.pitch * DEG_TO_RAD;
+
+    // f = focal length = distance of current POV to image plane
+    var f = (width / 2) / Math.tan(fov / 2);
+
+    // our coordinate system: camera at (0,0,0), heading = pitch = 0 at (0,f,0)
+    // calculate 3d coordinates of viewport center and target
+    var cos_p = Math.cos(p);
+    var sin_p = Math.sin(p);
+
+    var cos_h = Math.cos(h);
+    var sin_h = Math.sin(h);
+
+    var x = f * cos_p * sin_h;
+    var y = f * cos_p * cos_h;
+    var z = f * sin_p;
+
+    var cos_p0 = Math.cos(p0);
+    var sin_p0 = Math.sin(p0);
+
+    var cos_h0 = Math.cos(h0);
+    var sin_h0 = Math.sin(h0);
+
+    var x0 = f * cos_p0 * sin_h0;
+    var y0 = f * cos_p0 * cos_h0;
+    var z0 = f * sin_p0;
+
+    var nDotD = x0 * x + y0 * y + z0 * z;
+    var nDotC = x0 * x0 + y0 * y0 + z0 * z0;
+
+    // nDotD == |targetVec| * |currentVec| * cos(theta)
+    // nDotC == |currentVec| * |currentVec| * 1
+    // Note: |currentVec| == |targetVec| == f
+
+    // Sanity check: the vectors shouldn't be perpendicular because the line
+    // from camera through target would never intersect with the image plane
+    if (Math.abs(nDotD) < 1e-6) {
+      return null;
+    }
+
+    // t is the scale to use for the target vector such that its end
+    // touches the image plane. It's equal to 1/cos(theta) ==
+    //     (distance from camera to image plane through target) /
+    //     (distance from camera to target == f)
+    var t = nDotC / nDotD;
+
+    // Sanity check: it doesn't make sense to scale the vector in a negative
+    // direction. In fact, it should even be t >= 1.0 since the image plane
+    // is always outside the pano sphere (except at the viewport center)
+    if (t < 0.0) {
+      return null;
+    }
+
+    // (tx, ty, tz) are the coordinates of the intersection point between a
+    // line through camera and target with the image plane
+    var tx = t * x;
+    var ty = t * y;
+    var tz = t * z;
+
+    // u and v are the basis vectors for the image plane
+    var vx = -sin_p0 * sin_h0;
+    var vy = -sin_p0 * cos_h0;
+    var vz = cos_p0;
+
+    var ux = cos_h0;
+    var uy = -sin_h0;
+    var uz = 0;
+
+    // normalize horiz. basis vector to obtain orthonormal basis
+    var ul = Math.sqrt(ux * ux + uy * uy + uz * uz);
+    ux /= ul;
+    uy /= ul;
+    uz /= ul;
+
+    // project the intersection point t onto the basis to obtain offsets in
+    // terms of actual pixels in the viewport
+    var du = tx * ux + ty * uy + tz * uz;
+    var dv = tx * vx + ty * vy + tz * vz;
+
+    // use the calculated pixel offsets
+    target.left += du;
+    target.top -= dv;
+    return target;
+  },
+
+  addBlurb: function(heading, pitch, x, y){
+    var blurb = {panNum:this.state.panNum, panoID:this.state.panoID, text:"", pov:{heading:heading, pitch:pitch}, anchor:{left:x, top:y}}
+    var oldBlurbs = this.state.blurbs
+    if(oldBlurbs==null){
+      oldBlurbs = []
+    }
+    oldBlurbs.push(blurb)
+    console.log(oldBlurbs)
+    var oldVisibles = this.state.visibleBlurbs;
+    oldVisibles.push(blurb)
+    this.setState({blurbs:oldBlurbs, visibleBlurbs:oldVisibles})
+  },
+
+  editBlurb: function(index, value){
+    var blurbs = this.state.visibleBlurbs
+    blurbs[index].text=value
+    this.setState({visibleBlurbs:blurbs})
+  },
+
+  blurbPositioner: function(){
+    // if(this.state.visibleBlurbs==[]||undefined||null||[undefined]){
+    //   console.log('asdf')
+    // }
+    // else{
+    var newBlurbs=[]
+    this.state.blurbs.map(function(blurb){
+      if(blurb.panoID==this.state.panoID){
+        blurb.anchor=this.povToPixel3d(blurb.pov)
+        newBlurbs.push(blurb)
+      }
+    }.bind(this))
+    this.setState({visibleBlurbs:newBlurbs})
+  // }
   },
 
   updateZipInput: function(zip){
@@ -326,7 +504,7 @@ var Main = React.createClass({
     else{
       return(
         <div>
-          <Map startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
+          <Map editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
           <Button state={this.findByZip}/>
         </div>
       )

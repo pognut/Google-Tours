@@ -5,14 +5,21 @@ var Blurb = React.createClass({
 
 
   componentDidMount: function(){
-
+    console.log('yey')
       },
 
   render: function() {
-    //will probably have to do the loop over blurbs here? If not, make a panorama and do blurb loop there
-    //http://stackoverflow.com/questions/32157286/rendering-react-components-from-array-of-objects
+    //use conditional rendering to change whether input or text box is returned.
+    //if(editing?==false){
+    //eleVar = <p></p>
+    //}
+    //else <input>
+    var stylings = {top: this.props.anchor.top, left:this.props.anchor.left}
     return(
-      <div>
+      <div className="blurb" style={stylings}>
+        <input value={this.props.text} onChange={(e)=>this.props.editBlurb(this.props.index, e.target.value)}>
+        </input>
+
       </div>
     )
   }
