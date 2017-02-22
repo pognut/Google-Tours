@@ -7,8 +7,8 @@ class ToursController < ApplicationController
     blurbs = params[:tour]
     startLng = params[:startLng]
     startLat = params[:startLat]
-    preview = params[:preview]
-    Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: current_user.id, tourID: "N/A", preview: preview)
+    # preview = params[:preview]
+    Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: 1, tourID: "N/A", preview: "N/A")
   end
 
   def populate

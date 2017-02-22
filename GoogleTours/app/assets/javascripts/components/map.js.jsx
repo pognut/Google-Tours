@@ -33,7 +33,7 @@ var Map = React.createClass({
     //will probably have to do the loop over blurbs here? If not, make a panorama and do blurb loop there
     //http://stackoverflow.com/questions/32157286/rendering-react-components-from-array-of-objects
     if(this.props.isCreating){
-      var pano = <Panorama editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
+      var pano = <Panorama saveTour={this.props.saveTour} editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
     }
     return(
       <div>

@@ -300,6 +300,7 @@ var Main = React.createClass({
 
   setPanorama: function(){
     var testing = document.getElementById('testPano');
+    //make this outdoor only, it's a setting
     panorama = new google.maps.StreetViewPanorama(
       document.getElementById('testPano'), {
         position: this.state.startLoc,
@@ -472,6 +473,7 @@ var Main = React.createClass({
   },
 
   blurbPositioner: function(){
+    //split this into two functions, one to update visible blurbs, and one to update blurb positions
     // if(this.state.visibleBlurbs==[]||undefined||null||[undefined]){
     //   console.log('asdf')
     // }
@@ -485,6 +487,19 @@ var Main = React.createClass({
     }.bind(this))
     this.setState({visibleBlurbs:newBlurbs})
   // }
+  },
+
+  saveTour: function(){
+    tourString = JSON.stringify(this.state.blurbs)
+    $.ajax({
+      "dataType": 'JSON',
+      "url": '/tours/',
+      "method": 'POST',
+      "data": {tour: tourString, startLng: this.state.startLoc.lng, startLat: this.state.startLoc.lat},
+      success: function(){
+        console.log('tour saved')
+      }
+    })
   },
 
   updateZipInput: function(zip){
@@ -504,7 +519,7 @@ var Main = React.createClass({
     else{
       return(
         <div>
-          <Map editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
+          <Map saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
           <Button state={this.findByZip}/>
         </div>
       )

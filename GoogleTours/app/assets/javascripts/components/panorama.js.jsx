@@ -187,6 +187,7 @@ var Panorama = React.createClass({
     return(
       <div id="sigh">
       <button onClick={this.addBlurbButton}>Add a blurb</button>
+      <button onClick={this.props.saveTour}>Save Tour</button>
       <div id="testPano">
         {this.props.blurbs.map((blurb, index)=>
         <Blurb panNum={blurb.panNum} panoID={blurb.panoID} text={blurb.text} pov={blurb.pov} anchor={blurb.anchor} index={index} editBlurb={this.props.editBlurb}/>
