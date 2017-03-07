@@ -72,6 +72,13 @@ var Main = React.createClass({
     }
     var newMap =  new google.maps.Map(document.getElementById('map'), mapOptions)
     this.setState({map:newMap})
+    var markerPop = this.tourMarkerPopulate
+    google.maps.event.addListener(newMap, 'tilesloaded', function(){
+      markerPop(newMap.getBounds())
+      // newMap.addListener('tilesloaded',function(){
+      //   markerPop(newMap.getBounds())
+      // })
+    })
   },
 
   mapCenter() {
@@ -546,8 +553,8 @@ var Main = React.createClass({
     else{
       return(
         <div>
-          <Map closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
           <Button state={this.findByZip}/>
+          <Map closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
         </div>
       )
     }

@@ -46,7 +46,6 @@
         google.maps.event.addListenerOnce(map, 'idle', function(){
           // tourViewer()
           tourMarkerPopulate(map.getBounds())
-          //
           map.addListener('tilesloaded',function(){
             // tourViewer()
             tourMarkerPopulate(map.getBounds())

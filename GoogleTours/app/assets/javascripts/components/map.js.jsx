@@ -37,6 +37,8 @@ var Map = React.createClass({
     }
     return(
       <div>
+        <button onClick={(e)=> this.props.markers()}>TESTING</button>
+        <button onClick={(e)=> this.props.create()}>Make a tour</button>
         <div id="map">
         <ReactModal
           isOpen={this.props.modal}
@@ -46,8 +48,7 @@ var Map = React.createClass({
           {pano}
         </ReactModal>
         </div>
-        <button onClick={(e)=> this.props.markers()}>TESTING</button>
-        <button onClick={(e)=> this.props.create()}>Make a tour</button>
+
       </div>
     )
   }
