@@ -5,7 +5,7 @@ var Blurb = React.createClass({
 
 
   componentDidMount: function(){
-    console.log('yey')
+    // console.log('yey')
       },
 
   render: function() {
@@ -15,12 +15,20 @@ var Blurb = React.createClass({
     //}
     //else <input>
     var stylings = {top: this.props.anchor.top, left:this.props.anchor.left}
+    if(this.props.isCreating){
     return(
       <div className="blurb" style={stylings}>
         <input value={this.props.text} onChange={(e)=>this.props.editBlurb(this.props.index, e.target.value)}>
         </input>
-
       </div>
     )
+  }
+    else if(this.props.isViewing){
+          return(
+      <div className="blurb" style={stylings}>
+        {this.props.text}
+      </div>
+    )
+    }
   }
 });

@@ -128,16 +128,16 @@
  }
 
   //wraps ajax call to database for individual tour content.
-  function blurbRetrieval(id){
-    $.ajax({
-      "url":"/content",
-      "method":"get",
-      "data":{id:id}
-    }).done(function(data){
-      console.log(data)
-      tourViewer(data)
-    })
-  }
+  // function blurbRetrieval(id){
+  //   $.ajax({
+  //     "url":"/content",
+  //     "method":"get",
+  //     "data":{id:id}
+  //   }).done(function(data){
+  //     console.log(data)
+  //     tourViewer(data)
+  //   })
+  // }
 
 
   function tourViewer(value){

@@ -134,25 +134,34 @@ var Main = React.createClass({
     })
     infowindow.setContent(contentString[0])
     infowindow.open(map, marker)
+    var blurbRetriever = this.blurbRetrieval
+    var modalOpen = this.startCreating
+
     setTimeout(function(){$('#tourStart').on('click', function(){
+        var longitude = Number(value[0])
+        var latitude = Number(value[1])
+        var coords = {lat:latitude, lng:longitude}
+        modalOpen(coords)
         console.log('lajsdhflasdhf')
-        blurbRetrieval(value[2])
+        blurbRetriever(value[2])
       })},50)
   },
 
-  //   function blurbRetrieval(id){
-  //   $.ajax({
-  //     "url":"/content",
-  //     "method":"get",
-  //     "data":{id:id}
-  //   }).done(function(data){
-  //     console.log(data)
-  //     var blurbs = JSON.parse(data)
-  //     this.setState({blurbs:blurbs, panNum:1, panoID:blurbs[0].panoID})
-  //     tourViewer(data)
-  //   })
-  // },
+  blurbRetrieval(id){
+    $.ajax({
+      "url":"/content",
+      "method":"get",
+      "data":{id:id}
+    }).done(function(data){
+      console.log(data)
+      var blurbs = JSON.parse(data)
+      this.startViewing(blurbs)
+    }.bind(this))
+  },
 
+  startViewing(blurbs){
+    this.setState({isViewing: true, blurbs:blurbs, panNum:1, panoID:blurbs[0].panoID})
+  },
   // function tourViewer(value){
   //   $('#view-popup').popup('show',{
   //       blur:false,
@@ -298,6 +307,7 @@ var Main = React.createClass({
     this.setState({startLoc:coords, modalIsOpen:true})
   },
 
+  //this should be a unified panorama opening function (it pretty much is, keep it that way)
   setPanorama: function(){
     var testing = document.getElementById('testPano');
     //make this outdoor only, it's a setting
@@ -325,6 +335,22 @@ var Main = React.createClass({
     this.state.map.setStreetView(panorama);
     console.log(this.state.startLoc, panorama)
     this.setState({panorama:panorama})
+  },
+
+  //for now, have a single panorama close function that wipes all data, but keep in mind this wont
+  //work for more advanced features like remembering where in a tour a user was
+  closePanorama: function(){
+    this.setState({panorama:null,
+      blurbs:[],
+      startLoc: null,
+      panNum: null,
+      panoID: null,
+      isCreating: false,
+      isViewing: false,
+      visibleBlurbs: [],
+      heading: null,
+      pitch: null,
+      modalIsOpen: false})
   },
 
   setPanoID: function(panoID){
@@ -490,6 +516,7 @@ var Main = React.createClass({
   },
 
   saveTour: function(){
+    //put in a check to see if a tour id (db or custom) is present. If so, use update instead of create
     tourString = JSON.stringify(this.state.blurbs)
     $.ajax({
       "dataType": 'JSON',
@@ -519,7 +546,7 @@ var Main = React.createClass({
     else{
       return(
         <div>
-          <Map saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
+          <Map closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
           <Button state={this.findByZip}/>
         </div>
       )

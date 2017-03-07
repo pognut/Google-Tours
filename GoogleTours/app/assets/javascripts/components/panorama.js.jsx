@@ -4,7 +4,11 @@ var Panorama = React.createClass({
     // ReactModal.setAppElement('testPano')
     console.log(this.props)
     if(this.props.isCreating===true){
-      console.log('setting pano')
+      console.log('setting pano for create')
+      this.props.setPano()
+    }
+    if(this.props.isViewing===true){
+      console.log('setting pano for view')
       this.props.setPano()
     }
 
@@ -190,7 +194,7 @@ var Panorama = React.createClass({
       <button onClick={this.props.saveTour}>Save Tour</button>
       <div id="testPano">
         {this.props.blurbs.map((blurb, index)=>
-        <Blurb panNum={blurb.panNum} panoID={blurb.panoID} text={blurb.text} pov={blurb.pov} anchor={blurb.anchor} index={index} editBlurb={this.props.editBlurb}/>
+        <Blurb isCreating={this.props.isCreating} isViewing={this.props.isViewing} panNum={blurb.panNum} panoID={blurb.panoID} text={blurb.text} pov={blurb.pov} anchor={blurb.anchor} index={index} editBlurb={this.props.editBlurb}/>
       )}
       </div>
       </div>

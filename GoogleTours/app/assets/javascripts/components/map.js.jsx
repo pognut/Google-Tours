@@ -32,8 +32,8 @@ var Map = React.createClass({
   render: function() {
     //will probably have to do the loop over blurbs here? If not, make a panorama and do blurb loop there
     //http://stackoverflow.com/questions/32157286/rendering-react-components-from-array-of-objects
-    if(this.props.isCreating){
-      var pano = <Panorama saveTour={this.props.saveTour} editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
+    if(this.props.isCreating||this.props.isViewing){
+      var pano = <Panorama isViewing={this.props.isViewing} saveTour={this.props.saveTour} editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
     }
     return(
       <div>
@@ -41,6 +41,7 @@ var Map = React.createClass({
         <ReactModal
           isOpen={this.props.modal}
           contentLabel="Modal"
+          onRequestClose={this.props.closePanorama}
         >
           {pano}
         </ReactModal>
