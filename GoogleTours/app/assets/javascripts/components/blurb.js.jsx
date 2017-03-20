@@ -9,11 +9,6 @@ var Blurb = React.createClass({
       },
 
   render: function() {
-    //use conditional rendering to change whether input or text box is returned.
-    //if(editing?==false){
-    //eleVar = <p></p>
-    //}
-    //else <input>
     var stylings = {top: this.props.anchor.top, left:this.props.anchor.left}
     if(this.props.isCreating){
     return(

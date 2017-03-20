@@ -18,6 +18,9 @@ var Panorama = React.createClass({
     if(this.props.isCreating===false){
       google.maps.event.clearListeners(this.props.mapProp, 'click');
     }
+    if(this.props.firstSave===true){
+      this.props.tourMarkerPopulate()
+    }
   },
 
   addBlurbButton: function(){
