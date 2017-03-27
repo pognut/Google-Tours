@@ -11,6 +11,7 @@ var Main = React.createClass({
   //consider moving most of this state stuff down to map
 
   //current tour states: blurbs{panNum, panoID, text, heading/pitch(?)}, startLoc, preview, tourID,
+  //{panoID:{panNum:x, blurbs:[text, heading/pitch]}
   getInitialState: function() {
     //see if this might go better in componentwillmount or whatever
     return {
@@ -22,13 +23,15 @@ var Main = React.createClass({
       //holds the street view panorama element
       panorama: null,
       //holds an array with objects representing each blurb.
-      blurbs: [],
+      blurbs: {},
       //start coords
       startLoc: null,
       //current pan in tour sequence
       panNum: null,
+      highestPanNum: 0,
       //current google panoID
       panoID: null,
+      isStop: false,
       isCreating: false,
       isViewing: false,
       markers: null,
@@ -306,26 +309,14 @@ var Main = React.createClass({
       pitch: null,
       modalIsOpen: false})
   },
-
+  //rename to handlePanoChange
   setPanoID: function(panoID){
-    this.setState({panoID:panoID})
-  },
-
-  //currently non-functional, need to redo for more advanced tour creation/tour viewing
-  setPanNum: function(){
-    //if no first pan yet, this is first pan
-    if(this.state.panNum===null){
-      this.setState({panNum:1})
+    if(this.state.blurbs.panoID==undefined){
+      this.setState({panoID:panoID, isStop:false})
     }
-    //if previously used pan, this is that pan
-    // else if (this.state.visibleBlurbs===true){
-
-    // }
-    else {
-      var newPan = this.state.panNum + 1
-      this.setState({panNum:newPan})
+    else{
+      this.setState({panoID:panoID, isStop:true, panNum:this.state.blurbs.panNum})
     }
-    //if not previously used and not first, this is panNum + 1
   },
 
   get3dFov: function(zoom) {
@@ -436,6 +427,13 @@ var Main = React.createClass({
     return target;
   },
 
+  addStop: function(){
+    var oldBlurbs = this.state.blurbs
+    var panoID = this.state.panoID
+    oldBlurbs.panoID = {panNum:this.state.highestPanNum+1, blurbs:[]}
+    this.setState({blurbs:oldBlurbs, isStop:true})
+  },
+
   addBlurb: function(heading, pitch, x, y){
     var blurb = {panNum:this.state.panNum, panoID:this.state.panoID, text:"", pov:{heading:heading, pitch:pitch}, anchor:{left:x, top:y}}
     var oldBlurbs = this.state.blurbs
@@ -462,12 +460,14 @@ var Main = React.createClass({
     // }
     // else{
     var newBlurbs=[]
+    //change to for in
     this.state.blurbs.map(function(blurb){
       if(blurb.panoID==this.state.panoID){
         blurb.anchor=this.povToPixel3d(blurb.pov)
         newBlurbs.push(blurb)
       }
     }.bind(this))
+    //take this out, possibly rework the whole thing. Waaaaay too much extraneous state changing going on.
     this.setState({visibleBlurbs:newBlurbs})
   // }
   },
@@ -476,7 +476,6 @@ var Main = React.createClass({
     //put in a check to see if a tour id (db or custom) is present. If so, use update instead of create
     //Could also use isEditing/firstSave states
     tourString = JSON.stringify(this.state.blurbs)
-    //generate tourID here
     $.ajax({
       "dataType": 'JSON',
       "url": '/tours/',
@@ -505,7 +504,7 @@ var Main = React.createClass({
       return(
         <div>
           <Button state={this.findByZip}/>
-          <Map firstSave={this.state.firstSave} closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
+          <Map addStop={this.addStop} firstSave={this.state.firstSave} closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
         </div>
       )
     }

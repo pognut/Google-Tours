@@ -191,10 +191,13 @@ var Panorama = React.createClass({
     //     <Blurb panNum={blurb.panNum} panoID={blurb.panoID} key={blurb.panoID} text={blurb.text} anchor={this.povToPixel3d(blurb.anchor)}/>
     //   )
     // }
-    if(this.props.isCreating){
+    if(this.props.isCreating&&this.props.isStop){
       //instead of if/else, have button appearance be state based somehow, so that individual buttons
       //can be toggled on and off
       var buttons =  [<button onClick={this.addBlurbButton}>Add a blurb</button>, <button onClick={this.props.saveTour}>Save Tour</button>]
+    }
+    else if(this.props.isCreating){
+      var buttons =  [<button onClick={this.props.addStop}>Add a stop</button>, <button onClick={this.props.saveTour}>Save Tour</button>]
     }
     return(
       <div id="sigh">
