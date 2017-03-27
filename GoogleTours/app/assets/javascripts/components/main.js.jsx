@@ -12,6 +12,7 @@ var Main = React.createClass({
 
   //current tour states: blurbs{panNum, panoID, text, heading/pitch(?)}, startLoc, preview, tourID,
   //{panoID:{panNum:x, blurbs:[text, heading/pitch]}
+  //at some point, will have to rename blurbs to stops
   getInitialState: function() {
     //see if this might go better in componentwillmount or whatever
     return {
@@ -35,7 +36,6 @@ var Main = React.createClass({
       isCreating: false,
       isViewing: false,
       markers: null,
-      //currently visible blurbs, currently unneccessary
       visibleBlurbs: [],
       heading: null,
       pitch: null,
@@ -185,8 +185,14 @@ var Main = React.createClass({
 
   //called by blurbRetrieval to put blurb data into state.
   //also set isViewing to true, which causes map component to render Panorama, which calls setPano on mount
+  //**
   startViewing(blurbs){
-    this.setState({isViewing: true, blurbs:blurbs, panNum:1, panoID:blurbs[0].panoID})
+    var firstPano;
+    for (var keys in blurbs){
+      if(blurbs.keys.panNum = 1)
+        firstPano = keys
+    }
+    this.setState({isViewing: true, blurbs:blurbs, panNum:1, panoID:keys})
   },
 
   //for tour viewer, can simply bring up panorama with gmaps, then have blurbs show up based on state
@@ -298,7 +304,7 @@ var Main = React.createClass({
   //work for more advanced features like remembering where in a tour a user was
   closePanorama: function(){
     this.setState({panorama:null,
-      blurbs:[],
+      blurbs:{},
       startLoc: null,
       panNum: null,
       panoID: null,
@@ -308,15 +314,6 @@ var Main = React.createClass({
       heading: null,
       pitch: null,
       modalIsOpen: false})
-  },
-  //rename to handlePanoChange
-  setPanoID: function(panoID){
-    if(this.state.blurbs.panoID==undefined){
-      this.setState({panoID:panoID, isStop:false})
-    }
-    else{
-      this.setState({panoID:panoID, isStop:true, panNum:this.state.blurbs.panNum})
-    }
   },
 
   get3dFov: function(zoom) {
@@ -427,18 +424,31 @@ var Main = React.createClass({
     return target;
   },
 
+  //rename to handlePanoChange
+  //storageChange
+  setPanoID: function(panoID){
+    if(this.state.blurbs.panoID==undefined){
+      this.setState({panoID:panoID, isStop:false})
+    }
+    else{
+      this.setState({panoID:panoID, isStop:true, panNum:this.state.blurbs.panNum})
+    }
+  },
+
+  //storageChange
   addStop: function(){
     var oldBlurbs = this.state.blurbs
     var panoID = this.state.panoID
-    oldBlurbs.panoID = {panNum:this.state.highestPanNum+1, blurbs:[]}
+    oldBlurbs.panoID = {panNum:this.state.highestPanNum+1, blurbs:[], highestPanNum: this.state.highestPanNum+1}
     this.setState({blurbs:oldBlurbs, isStop:true})
   },
 
+  //storageChange
   addBlurb: function(heading, pitch, x, y){
     var blurb = {panNum:this.state.panNum, panoID:this.state.panoID, text:"", pov:{heading:heading, pitch:pitch}, anchor:{left:x, top:y}}
     var oldBlurbs = this.state.blurbs
     if(oldBlurbs==null){
-      oldBlurbs = []
+      oldBlurbs = {}
     }
     oldBlurbs.push(blurb)
     console.log(oldBlurbs)
@@ -447,12 +457,14 @@ var Main = React.createClass({
     this.setState({blurbs:oldBlurbs, visibleBlurbs:oldVisibles})
   },
 
+  //storageChange
   editBlurb: function(index, value){
     var blurbs = this.state.visibleBlurbs
     blurbs[index].text=value
     this.setState({visibleBlurbs:blurbs})
   },
 
+  //**
   blurbPositioner: function(){
     //split this into two functions, one to update visible blurbs, and one to update blurb positions
     // if(this.state.visibleBlurbs==[]||undefined||null||[undefined]){
