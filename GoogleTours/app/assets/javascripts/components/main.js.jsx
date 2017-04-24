@@ -190,7 +190,7 @@ var Main = React.createClass({
   startViewing(blurbs){
     var firstPano;
     for (var keys in blurbs){
-      if(blurbs.keys.panNum = 1)
+      if(blurbs[keys].panNum = 1)
         firstPano = keys
     }
     this.setState({isViewing: true, blurbs:blurbs, panNum:1, panoID:keys})
