@@ -9,7 +9,7 @@ class ToursController < ApplicationController
     startLat = params[:startLat]
     id = SecureRandom.base58(24)
     # preview = params[:preview]
-    Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: 1, tourID: id, preview: "N/A")
+    Tour.create(blurbs: blurbs, startLng: startLng, startLat: startLat, user_id: 1, preview: "N/A", tourID: id)
   end
 
   def populate
