@@ -1,10 +1,11 @@
-var Map = React.createClass({
+var Mapp = React.createClass({
   //set state to
   //need to use refs so I can stick create map in will mount, and create marker in did mount
 
 
 
   componentDidMount: function(){
+       console.log("asdfasdf")
        this.props.createMap()
        // this.props.createMarker()
       },
@@ -30,21 +31,24 @@ var Map = React.createClass({
   },
 
   render: function() {
+    //changes to Panorama cause map to rerender as well due to the flow of data
+    //this will need to be fixed, either through redux or repositioning pano
+
     //will probably have to do the loop over blurbs here? If not, make a panorama and do blurb loop there
     //http://stackoverflow.com/questions/32157286/rendering-react-components-from-array-of-objects
     if(this.props.isCreating||this.props.isViewing){
-      var pano = <Panorama isStop={this.props.isStop} addStop={this.props.addStop} firstSave={this.props.firstSave} tourMarkerPopulate={this.props.markers} isViewing={this.props.isViewing} saveTour={this.props.saveTour} editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
+      var pano = <Panorama inputChange={this.props.inputChange} handleControls={this.props.handleControls} isStop={this.props.isStop} addStop={this.props.addStop} firstSave={this.props.firstSave} tourMarkerPopulate={this.props.markers} isViewing={this.props.isViewing} saveTour={this.props.saveTour} editBlurb={this.props.editBlurb} blurbs={this.props.blurbs} addBlurb={this.props.addBlurb} isCreating={this.props.isCreating} setPano={this.props.setPano} mapProp={this.props.mapProp} panoProp={this.props.panoProp}/>
     }
     return(
       <div>
-        <button onClick={(e)=> this.props.create()}>Make a tour</button>
+        {this.props.loggedIn ? (<button onClick={(e)=> this.props.create()}>Make a tour</button>):(<h4>Sign in to make a tour!</h4>)}
         <div id="map">
         <ReactModal
           isOpen={this.props.modal}
           contentLabel="Modal"
           onRequestClose={this.props.closePanorama}
         >
-          {pano}
+        {pano}
         </ReactModal>
         </div>
 

@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   resources :tours
   get '/populate', to: 'tours#populate'
   get '/content', to: 'tours#content'
+  get '/is_signed_in', to: 'tours#is_signed_in?'
+  get '/profile', to: 'tours#profile'
 end

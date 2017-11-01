@@ -194,10 +194,19 @@ var Panorama = React.createClass({
     if(this.props.isCreating&&this.props.isStop){
       //instead of if/else, have button appearance be state based somehow, so that individual buttons
       //can be toggled on and off
-      var buttons =  [<button onClick={this.addBlurbButton}>Add a blurb</button>, <button onClick={this.props.saveTour}>Save Tour</button>]
+      if(this.props.firstSave===false){
+        //adding preview input here if all else fails
+        var buttons =  [<button onClick={this.addBlurbButton}>Add a blurb</button>, <button onClick={this.props.saveTour}>Save Tour</button>, <input name="tourPreview" onChange={this.props.inputChange}></input>]
+      }
+      else{
+        var buttons =  [<button onClick={this.addBlurbButton}>Add a blurb</button>, <button onClick={this.props.saveTour}>Save Tour</button>]
+      }
     }
     else if(this.props.isCreating){
       var buttons =  [<button onClick={this.props.addStop}>Add a stop</button>, <button onClick={this.props.saveTour}>Save Tour</button>]
+    }
+    else if(this.props.isViewing){
+      var buttons = [<button onClick={()=>this.props.handleControls(1)}>Forward</button>, <button onClick={()=>this.props.handleControls(-1)}>Back</button>]
     }
     return(
       <div id="sigh">

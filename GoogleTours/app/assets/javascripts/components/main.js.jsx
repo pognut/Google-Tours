@@ -17,7 +17,7 @@ var Main = React.createClass({
     //see if this might go better in componentwillmount or whatever
     return {
       location:{lat:null, lng:null},
-      havelocation: false,
+      havelocation:false,
       bounds: null,
       //holds the map element
       map: null,
@@ -43,7 +43,9 @@ var Main = React.createClass({
       zipInput: null,
       modalIsOpen: false,
       //during creation, tracks whether
-      firstSave: false
+      firstSave: false,
+      loggedIn: false,
+      user: null
     }
   },
 
@@ -51,14 +53,21 @@ var Main = React.createClass({
   componentWillMount(){
     //set up react modal
     ReactModal.setAppElement('body')
+    $.ajax({
+      method: "GET",
+      url: "/is_signed_in.json"
+    })
+    .done(function(data){
+      this.setState({ loggedIn: data.signed_in, user:data.user });
+    }.bind(this));
     //Geolocation check, if location is not shared it will ask for ZIP code.
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position){
         console.log('working?')
-        pos = {
+        var pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
-        };
+        }
         this.setState({location:pos, havelocation:true})
         // if(navigator.geolocation.getCurrentPosition)
       }.bind(this))
@@ -165,7 +174,6 @@ var Main = React.createClass({
         var latitude = Number(value[1])
         var coords = {lat:latitude, lng:longitude}
         modalOpen(coords)
-        console.log('lajsdhflasdhf')
         blurbRetriever(value[2])
 
       })
@@ -178,8 +186,9 @@ var Main = React.createClass({
       "method":"get",
       "data":{id:id}
     }).done(function(data){
-      console.log(data)
       var blurbs = JSON.parse(data)
+      console.log(data)
+      console.log(blurbs)
       this.startViewing(blurbs)
     }.bind(this))
   },
@@ -188,12 +197,13 @@ var Main = React.createClass({
   //also set isViewing to true, which causes map component to render Panorama, which calls setPano on mount
   //storageChange
   startViewing(blurbs){
+    console.log(blurbs)
     var firstPano;
     for (var keys in blurbs){
-      if(blurbs[keys].panNum = 1)
+      if(blurbs[keys].panNum === 1)
         firstPano = keys
     }
-    this.setState({isViewing: true, blurbs:blurbs, panNum:1, panoID:keys})
+    this.setState({isViewing:true, blurbs:blurbs, panNum:1, panoID:firstPano})
   },
 
   //for tour viewer, can simply bring up panorama with gmaps, then have blurbs show up based on state
@@ -314,6 +324,7 @@ var Main = React.createClass({
       visibleBlurbs: [],
       heading: null,
       pitch: null,
+      highestPanNum: 0,
       modalIsOpen: false})
   },
 
@@ -441,8 +452,11 @@ var Main = React.createClass({
     console.log(this.state.isStop)
     var oldBlurbs = this.state.blurbs
     var panoID = this.state.panoID
-    oldBlurbs[panoID] = {panNum:this.state.highestPanNum+1, blurbs:[], highestPanNum: this.state.highestPanNum+1}
-    this.setState({blurbs:oldBlurbs, isStop:true})
+    console.log(this.state.highestPanNum)
+    var newHigh = this.state.highestPanNum + 1
+    oldBlurbs[panoID] = {panNum:newHigh, blurbs:[]}
+    console.log(oldBlurbs[panoID])
+    this.setState({blurbs:oldBlurbs, isStop:true, highestPanNum:newHigh})
   },
 
   //storageChange
@@ -481,21 +495,45 @@ var Main = React.createClass({
   saveTour: function(){
     //put in a check to see if a tour id (db or custom) is present. If so, use update instead of create
     //Could also use isEditing/firstSave states
-    tourString = JSON.stringify(this.state.blurbs)
-    $.ajax({
-      "dataType": 'JSON',
-      "url": '/tours/',
-      "method": 'POST',
-      "data": {tour: tourString, startLng: this.state.startLoc.lng, startLat: this.state.startLoc.lat},
-    }).done(function(data){
-      console.log('tour saved')
-      this.setState({firstSave:true})
-    }.bind(this))
+    if(this.state.firstSave===false){
+
+      tourString = JSON.stringify(this.state.blurbs)
+      $.ajax({
+        "dataType": 'JSON',
+        "url": '/tours/',
+        "method": 'POST',
+        "data": {tour: tourString, startLng: this.state.startLoc.lng, startLat: this.state.startLoc.lat, preview:this.state.tourPreview, id:this.state.user.id},
+      }).done(function(data){
+        console.log('tour saved')
+        this.setState({firstSave:true})
+      }.bind(this))
+    }
+    else{
+
+    }
   },
 
+  handleControls: function(direction){
+    var target = this.state.panNum + direction;
+    console.log(this.state.blurbs)
+    for(var keys in this.state.blurbs){
+      if(this.state.blurbs[keys].panNum === target){
+        this.state.panorama.setPano(keys)
+        this.setPanoID(keys)
+        break;
+      }
+    }
+  },
 
   updateZipInput: function(zip){
     this.setState({zipInput:zip})
+  },
+
+  handleInputChange(event) {
+    var target = event.target;
+    var value = target.type === 'checkbox' ? target.checked : target.value;
+    var name = target.name;
+    this.setState({[name]:value});
   },
 
   render: function() {
@@ -509,10 +547,10 @@ var Main = React.createClass({
     else{
       return(
         <div>
-          <Button state={this.findByZip}/>
-          <Map isStop={this.state.isStop} addStop={this.addStop} firstSave={this.state.firstSave} closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
+          <Button state={this.findByZip} input={this.updateZipInput}/>
+          <Mapp loggedIn={this.state.loggedIn} inputChange={this.handleInputChange} handleControls={this.handleControls} isStop={this.state.isStop} addStop={this.addStop} firstSave={this.state.firstSave} closePanorama={this.closePanorama} isViewing={this.state.isViewing} saveTour={this.saveTour} editBlurb={this.editBlurb} blurbs={this.state.visibleBlurbs} addBlurb={this.addBlurb} startCreating={this.startCreating} modal={this.state.modalIsOpen} panoProp={this.state.panorama} setPano={this.setPanorama} mapProp={this.state.map} create={this.createTourSwitch} isCreating={this.state.isCreating} markers={this.tourMarkerPopulate} createMap={this.createMap} createMarker={this.createMarker} createInfoWindow={this.createInfoWindow} lng={this.state.location.lng} lat={this.state.location.lat} geolocate={this.geolocate}/>
         </div>
-      )
+      );
     }
   }
 });
