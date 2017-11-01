@@ -1,4 +1,4 @@
-var Mapp = React.createClass({
+var MapHolder = React.createClass({
   //set state to
   //need to use refs so I can stick create map in will mount, and create marker in did mount
 
