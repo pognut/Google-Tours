@@ -1,0 +1,147 @@
+/* line 5, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+html,
+body,
+.GMap {
+  height: 100vh;
+  position: absolute;
+  width: 100vw;
+}
+
+/* line 12, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.GMap-canvas {
+  top: 20px;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+/* line 19, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.UpdatedText {
+  color: red;
+}
+
+/* line 24, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map-container {
+  height: 75vw;
+  width: 75vw;
+  margin: 0 auto;
+}
+
+/* line 30, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+nav {
+  text-align: right;
+  margin-right: 10%;
+}
+
+/* line 35, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map {
+  height: 80vh;
+  width: 80vw;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* line 42, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#map-container > * {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* line 48, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.popup {
+  height: 500px;
+  width: 500px;
+  visibility: hidden;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+/* line 57, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.pano {
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* line 63, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#panoWriter {
+  height: 100%;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* line 71, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#blurbInput {
+  visibility: hidden;
+}
+
+/* line 75, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#blurbSave {
+  visibility: hidden;
+}
+
+/* line 79, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#saveTour {
+  visibility: hidden;
+}
+
+/* line 83, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.blurbDiv {
+  background: white;
+  border: solid 1px black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/* line 90, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#jsdiv {
+  height: 1px;
+}
+
+/* line 94, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#testPano {
+  height: 100%;
+}
+
+/* line 99, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+.blurb {
+  background: white;
+  border: solid 1px black;
+  border-radius: 5px;
+  z-index: 1000;
+  position: absolute;
+}
+
+/* line 107, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+#sigh {
+  height: 100%;
+}
+
+/* line 111, /Users/nicholasmichel/Desktop/Project-4/GoogleTours/app/assets/stylesheets/tours.scss */
+body {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/3/39/NYC_Top_of_the_Rock_Pano.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+
