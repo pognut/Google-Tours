@@ -62,7 +62,11 @@ var Main = React.createClass({
     }.bind(this));
     //Geolocation check, if location is not shared it will ask for ZIP code.
     if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(function(position){
+      var problem = function(err) {
+        console.log('asdfasdfasdf')
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+      }
+      var yeyi = function(position){
         console.log('working?')
         var pos = {
           lat: position.coords.latitude,
@@ -70,7 +74,14 @@ var Main = React.createClass({
         }
         this.setState({location:pos, havelocation:true})
         // if(navigator.geolocation.getCurrentPosition)
-      }.bind(this))
+      }.bind(this)
+      var options = {timeout:10000}
+      //error callbacks only fire in FF if user clicks never share location
+      //clean this up and move it to geolocate function
+      navigator.geolocation.getCurrentPosition(yeyi, problem, options)
+    }
+    else{
+      console.log('no share')
     }
   },
 
@@ -250,8 +261,14 @@ var Main = React.createClass({
     geocoder.geocode( { 'address': this.state.zipInput}, function(results, status) {
       if (status == 'OK') {
         console.log(results)
-        this.state.map.setCenter(results[0].geometry.location);
-        this.setState({location:{lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()}, havelocation:true})
+        if(this.state.havelocation===true){
+          this.state.map.setCenter(results[0].geometry.location);
+          this.setState({location:{lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()}})
+        }
+        else{
+          this.setState({location:{lat:results[0].geometry.location.lat(),lng:results[0].geometry.location.lng()}, havelocation:true})
+        }
+
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
