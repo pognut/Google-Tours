@@ -171,22 +171,21 @@ var Main = React.createClass({
 
   //called by click listeners on markers
   tourPreview(value, marker){
-    var contentString = $("<button id = tourStart>"+value[3]+"</button>")
+    var contentString = $("<div><button class = tourStart>"+value[3]+"</button>"+"<p>Created by: "+value[4]+"</p></div>")
     var infowindow = new google.maps.InfoWindow({
+      content: contentString[0]
     })
-    infowindow.setContent(contentString[0])
     infowindow.open(map, marker)
     var blurbRetriever = this.blurbRetrieval
     var modalOpen = this.startCreating
     //preview is also a button that fires off DB call for blurbs for a given tour.
-    contentString.on('click', function(){
+    $(contentString[0].children[0]).on('click', function(){
         infowindow.close()
         var longitude = Number(value[0])
         var latitude = Number(value[1])
         var coords = {lat:latitude, lng:longitude}
         modalOpen(coords)
         blurbRetriever(value[2])
-
       })
   },
 

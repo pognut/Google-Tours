@@ -23,7 +23,7 @@ class ToursController < ApplicationController
   def populate
     bounds = JSON.parse(params[:bounds])
     # pluck tour.all.startlat/lng where startlat/lng is in bounds limit i dunno 10
-    test = Tour.where(startLat: bounds['south']..bounds['north'],startLng: bounds['west']..bounds['east']).limit(10).pluck(:startLng, :startLat, :id, :preview)
+    test = Tour.joins(:user).where(startLat: bounds['south']..bounds['north'],startLng: bounds['west']..bounds['east']).limit(10).pluck(:startLng, :startLat, :id, :preview, :email)
     # figure out the best way to get associated email for each tour
     render :json => test
   end
@@ -48,9 +48,3 @@ class ToursController < ApplicationController
 end
 
 
-
-# Left to do:
-# * Tour Demo
-# * Readme
-# * Put on Heroku without exploding
-# * Resume, Cover letter and profile
